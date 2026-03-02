@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Building2, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { login, initDB } from "@/lib/db";
+import { login, initDB, getAll, type User } from "@/lib/db";
 import { toast } from "@/hooks/use-toast";
 
 // Initialize DB on first load
@@ -15,6 +15,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const users = useMemo(() => getAll<User>("users").filter((u) => u.status === "Active"), []);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,15 +65,24 @@ const Login = () => {
             <Button type="submit" className="w-full">Sign In</Button>
           </form>
 
-          <div className="mt-6 p-3 bg-muted/50 rounded-md">
-            <p className="text-xs font-medium text-muted-foreground mb-2">Demo Credentials:</p>
-            <div className="grid grid-cols-2 gap-1 text-xs text-muted-foreground">
-              <span>Admin:</span><span>admin@ngo.org / admin123</span>
-              <span>Management:</span><span>nadia@ngo.org / nadia123</span>
-              <span>Manager:</span><span>rahul@ngo.org / rahul123</span>
-              <span>Employee:</span><span>aisha@ngo.org / aisha123</span>
+          {users.length > 0 && (
+            <div className="mt-6 p-3 bg-muted/50 rounded-md">
+              <p className="text-xs font-medium text-muted-foreground mb-2">Available Accounts:</p>
+              <div className="grid grid-cols-2 gap-1 text-xs text-muted-foreground">
+                {users.map((u) => (
+                  <button
+                    type="button"
+                    key={u.id}
+                    className="contents cursor-pointer hover:text-foreground"
+                    onClick={() => { setEmail(u.email); setPassword(u.password); }}
+                  >
+                    <span className="capitalize">{u.role}:</span>
+                    <span>{u.email} / {u.password}</span>
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
