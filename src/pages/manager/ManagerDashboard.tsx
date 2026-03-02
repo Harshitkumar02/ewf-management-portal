@@ -4,7 +4,7 @@ import PageHeader from "@/components/layout/PageHeader";
 import { Users, CalendarCheck, FileText, ListTodo, Upload, ClipboardCheck, ClipboardList, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { getAll, getCurrentUser, insert, generateId, isCheckInLate, type User, type AttendanceRecord, type Report, type Task } from "@/lib/db";
+import { getAll, getCurrentUser, insert, generateId, isCheckInLate, getLocalDate, getLocalTime, type User, type AttendanceRecord, type Report, type Task } from "@/lib/db";
 import AttendanceCheckInModal from "@/components/attendance/AttendanceCheckInModal";
 
 const ManagerDashboard = () => {
@@ -22,7 +22,7 @@ const ManagerDashboard = () => {
 
     const district = currentUser?.district || "";
     const teamMembers = users.filter((u) => u.district === district && u.role === "employee");
-    const today = new Date().toISOString().split("T")[0];
+    const today = getLocalDate();
     const todayAttendance = attendance.filter((a) => a.district === district && a.date === today && a.status !== "Absent");
     const myReports = allReports.filter((r) => r.submittedBy === currentUser?.id);
     const myTasks = tasks.filter((t) => t.assignedBy === currentUser?.id && t.status !== "Completed");
@@ -95,11 +95,12 @@ const ManagerDashboard = () => {
         onSubmit={(data) => {
           if (!currentUser) return;
           const now = new Date();
-          const timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
+          const timeStr = getLocalTime(now);
+          const dateStr = getLocalDate(now);
           insert<AttendanceRecord>("attendance", {
             id: generateId(), userId: currentUser.id, userName: currentUser.name,
             district: currentUser.district, project: currentUser.project,
-            date: now.toISOString().split("T")[0], checkIn: timeStr, checkOut: "—",
+            date: dateStr, checkIn: timeStr, checkOut: "—",
             status: isCheckInLate() ? "Late" : "Present", location: "GPS Verified",
             gps: `${data.latitude.toFixed(4)}, ${data.longitude.toFixed(4)}`,
             selfie: true, photo: data.photo,

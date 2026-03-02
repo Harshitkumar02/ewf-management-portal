@@ -1,9 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useCamera } from "@/hooks/use-camera";
 import { useGeolocation } from "@/hooks/use-geolocation";
 import { Camera, MapPin, CheckCircle, RefreshCw, AlertTriangle } from "lucide-react";
+import { getLocalDate, getLocalTime } from "@/lib/db";
+
+const LiveTimestamp = () => {
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <div className="text-center text-sm text-muted-foreground">
+      {getLocalDate(now)} — {getLocalTime(now)}:{String(now.getSeconds()).padStart(2, "0")}
+    </div>
+  );
+};
 
 interface AttendanceCheckInModalProps {
   open: boolean;
@@ -159,10 +173,8 @@ const AttendanceCheckInModal = ({ open, onOpenChange, type, onSubmit }: Attendan
               )}
             </div>
 
-            {/* Timestamp */}
-            <div className="text-center text-sm text-muted-foreground">
-              {new Date().toLocaleDateString()} — {new Date().toLocaleTimeString()}
-            </div>
+            {/* Timestamp - live clock */}
+            <LiveTimestamp />
 
             {/* Submit */}
             <Button
