@@ -63,7 +63,14 @@ export function useCamera() {
 
   const retakePhoto = useCallback(() => {
     setState((s) => ({ ...s, photo: null }));
-  }, []);
+    // Re-attach stream to video element after clearing photo
+    setTimeout(() => {
+      if (videoRef.current && state.stream) {
+        videoRef.current.srcObject = state.stream;
+        videoRef.current.play().catch(() => {});
+      }
+    }, 50);
+  }, [state.stream]);
 
   const stopCamera = useCallback(() => {
     if (state.stream) {
