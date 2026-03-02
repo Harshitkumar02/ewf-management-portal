@@ -78,11 +78,11 @@ const EmployeeDashboard = () => {
 
       <p className="text-lg mb-6">Welcome, <span className="font-semibold">{currentUser?.name || "Employee"}</span></p>
 
-      <div className="flex flex-wrap gap-3 mb-6">
-        <Button onClick={() => setCheckInOpen(true)} disabled={hasCheckedIn}><Camera className="w-4 h-4 mr-1.5" /> {hasCheckedIn ? "Checked In ✓" : "Check-In"}</Button>
-        <Button variant="outline" onClick={() => setCheckOutOpen(true)} disabled={!hasCheckedIn || hasCheckedOut}><Camera className="w-4 h-4 mr-1.5" /> {hasCheckedOut ? "Checked Out ✓" : "Check-Out"}</Button>
-        <Link to="/employee/leave"><Button variant="outline"><CalendarDays className="w-4 h-4 mr-1.5" /> Apply Leave</Button></Link>
-        <Button variant="outline" onClick={() => setUploadOpen(true)}><Upload className="w-4 h-4 mr-1.5" /> Upload Work Proof</Button>
+      <div className="flex flex-col sm:flex-row flex-wrap gap-3 mb-6">
+        <Button className="w-full sm:w-auto" onClick={() => setCheckInOpen(true)} disabled={hasCheckedIn}><Camera className="w-4 h-4 mr-1.5" /> {hasCheckedIn ? "Checked In ✓" : "Check-In"}</Button>
+        <Button className="w-full sm:w-auto" variant="outline" onClick={() => setCheckOutOpen(true)} disabled={!hasCheckedIn || hasCheckedOut}><Camera className="w-4 h-4 mr-1.5" /> {hasCheckedOut ? "Checked Out ✓" : "Check-Out"}</Button>
+        <Link to="/employee/leave" className="w-full sm:w-auto"><Button className="w-full" variant="outline"><CalendarDays className="w-4 h-4 mr-1.5" /> Apply Leave</Button></Link>
+        <Button className="w-full sm:w-auto" variant="outline" onClick={() => setUploadOpen(true)}><Upload className="w-4 h-4 mr-1.5" /> Upload Work Proof</Button>
       </div>
 
       <div className="bg-card border rounded-md shadow-sm p-4 mb-6">
@@ -90,7 +90,7 @@ const EmployeeDashboard = () => {
           <Camera className="w-4 h-4 text-primary" />
           <h3 className="font-heading font-semibold">Selfie & Location Attendance</h3>
         </div>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-2 sm:gap-4">
           <div className="bg-success/10 rounded-md p-3 text-center">
             <p className="text-2xl font-bold text-success">{presentCount}</p>
             <p className="text-xs text-muted-foreground">Present</p>

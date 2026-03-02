@@ -148,31 +148,31 @@ const AttendanceView = () => {
         title="Attendance Overview"
         breadcrumbs={[{ label: "Admin", path: "/admin/dashboard" }, { label: "Attendance" }]}
         action={
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setSettingsOpen(true)}><Settings className="w-4 h-4 mr-1.5" /> Check-In Settings</Button>
-            <Button variant="outline" onClick={handleExportExcel}><Download className="w-4 h-4 mr-1.5" /> Export Excel</Button>
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" size="sm" onClick={() => setSettingsOpen(true)}><Settings className="w-4 h-4 mr-1.5" /> <span className="hidden sm:inline">Check-In </span>Settings</Button>
+            <Button variant="outline" size="sm" onClick={handleExportExcel}><Download className="w-4 h-4 mr-1.5" /> Export</Button>
           </div>
         }
       />
 
-      <div className="bg-primary/5 border border-primary/20 rounded-md p-3 mb-4 flex items-center gap-3 text-sm">
-        <Camera className="w-5 h-5 text-primary shrink-0" />
+      <div className="bg-primary/5 border border-primary/20 rounded-md p-3 mb-4 flex items-start sm:items-center gap-3 text-sm">
+        <Camera className="w-5 h-5 text-primary shrink-0 mt-0.5 sm:mt-0" />
         <div>
-          <span className="font-medium text-foreground">Selfie & GPS Verified Attendance</span>
-          <span className="text-muted-foreground ml-1">— Employees check in with a selfie and verified GPS location within geo-fenced project zones.</span>
+          <span className="font-medium text-foreground">Selfie & GPS Verified</span>
+          <span className="text-muted-foreground ml-1 hidden sm:inline">— Employees check in with a selfie and verified GPS location within geo-fenced project zones.</span>
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-3 mb-4">
+      <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-3 mb-4">
         <Select value={districtFilter} onValueChange={setDistrictFilter}>
-          <SelectTrigger className="w-40"><SelectValue placeholder="All Districts" /></SelectTrigger>
+          <SelectTrigger className="w-full sm:w-40"><SelectValue placeholder="All Districts" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Districts</SelectItem>
             {districts.map((d) => <SelectItem key={d.id} value={d.name}>{d.name}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={designationFilter} onValueChange={setDesignationFilter}>
-          <SelectTrigger className="w-48"><SelectValue placeholder="All Designations" /></SelectTrigger>
+          <SelectTrigger className="w-full sm:w-48"><SelectValue placeholder="All Designations" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Designations</SelectItem>
             <SelectItem value="management">Management</SelectItem>
@@ -190,7 +190,7 @@ const AttendanceView = () => {
 
         <TabsContent value="daily">
           <div className="mb-4">
-            <Input type="date" className="w-44" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} />
+            <Input type="date" className="w-full sm:w-44" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} />
           </div>
           <div className="bg-card border rounded-md shadow-sm overflow-x-auto">
             <table className="data-table">
@@ -225,7 +225,7 @@ const AttendanceView = () => {
 
         <TabsContent value="monthly">
           <div className="mb-4">
-            <Input type="month" className="w-44" value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)} />
+            <Input type="month" className="w-full sm:w-44" value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)} />
           </div>
           <div className="bg-card border rounded-md shadow-sm overflow-x-auto">
             <table className="data-table">

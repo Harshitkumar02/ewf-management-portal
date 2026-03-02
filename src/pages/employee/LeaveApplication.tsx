@@ -40,7 +40,7 @@ const LeaveApplication = () => {
         <div className="bg-card border rounded-md shadow-sm p-6">
           <h3 className="font-heading font-semibold mb-4">Apply for Leave</h3>
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5"><Label>From Date</Label><Input type="date" value={form.from} onChange={(e) => setForm({ ...form, from: e.target.value })} /></div>
               <div className="space-y-1.5"><Label>To Date</Label><Input type="date" value={form.to} onChange={(e) => setForm({ ...form, to: e.target.value })} /></div>
             </div>
