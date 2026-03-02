@@ -67,6 +67,11 @@ const EmployeeDashboard = () => {
   const absentCount = attendance.filter((a) => a.status === "Absent").length;
   const lateCount = attendance.filter((a) => a.status === "Late").length;
 
+  const today = new Date().toISOString().split("T")[0];
+  const todayRecord = attendance.find((a) => a.date === today);
+  const hasCheckedIn = !!todayRecord;
+  const hasCheckedOut = !!todayRecord && todayRecord.checkOut !== "—";
+
   return (
     <DashboardLayout role="employee" userName={currentUser?.name || "Employee"}>
       <PageHeader title="Employee Dashboard" breadcrumbs={[{ label: "Employee" }, { label: "Dashboard" }]} />
@@ -74,8 +79,8 @@ const EmployeeDashboard = () => {
       <p className="text-lg mb-6">Welcome, <span className="font-semibold">{currentUser?.name || "Employee"}</span></p>
 
       <div className="flex flex-wrap gap-3 mb-6">
-        <Button onClick={() => setCheckInOpen(true)}><Camera className="w-4 h-4 mr-1.5" /> Check-In</Button>
-        <Button variant="outline" onClick={() => setCheckOutOpen(true)}><Camera className="w-4 h-4 mr-1.5" /> Check-Out</Button>
+        <Button onClick={() => setCheckInOpen(true)} disabled={hasCheckedIn}><Camera className="w-4 h-4 mr-1.5" /> {hasCheckedIn ? "Checked In ✓" : "Check-In"}</Button>
+        <Button variant="outline" onClick={() => setCheckOutOpen(true)} disabled={!hasCheckedIn || hasCheckedOut}><Camera className="w-4 h-4 mr-1.5" /> {hasCheckedOut ? "Checked Out ✓" : "Check-Out"}</Button>
         <Link to="/employee/leave"><Button variant="outline"><CalendarDays className="w-4 h-4 mr-1.5" /> Apply Leave</Button></Link>
         <Button variant="outline" onClick={() => setUploadOpen(true)}><Upload className="w-4 h-4 mr-1.5" /> Upload Work Proof</Button>
       </div>
