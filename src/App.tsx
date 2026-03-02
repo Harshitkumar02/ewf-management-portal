@@ -15,6 +15,7 @@ import ManageLeaves from "./pages/management/ManageLeaves";
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
 import ReportUpload from "./pages/manager/ReportUpload";
 import TaskManagement from "./pages/manager/TaskManagement";
+import ManagerLeaveApplication from "./pages/manager/LeaveApplication";
 import EmployeeDashboard from "./pages/employee/EmployeeDashboard";
 import EmployeeTasks from "./pages/employee/EmployeeTasks";
 import LeaveApplication from "./pages/employee/LeaveApplication";
@@ -42,6 +43,7 @@ const App = () => (
           <Route path="/manager/dashboard" element={<ManagerDashboard />} />
           <Route path="/manager/reports" element={<ReportUpload />} />
           <Route path="/manager/tasks" element={<TaskManagement />} />
+          <Route path="/manager/leave" element={<ManagerLeaveApplication />} />
           <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
           <Route path="/employee/tasks" element={<EmployeeTasks />} />
           <Route path="/employee/leave" element={<LeaveApplication />} />
