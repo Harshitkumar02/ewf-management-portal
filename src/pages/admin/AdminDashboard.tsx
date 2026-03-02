@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import PageHeader from "@/components/layout/PageHeader";
-import { MapPin, FolderOpen, Users, FileText, Search, Eye } from "lucide-react";
+import { MapPin, FolderOpen, Users, FileText, Search, Download } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -84,7 +84,7 @@ const AdminDashboard = () => {
                   <td>{r.district}</td>
                   <td>{r.submittedByName}</td>
                   <td>{statusBadge(r.status)}</td>
-                  <td><Button variant="ghost" size="sm"><Eye className="w-4 h-4 mr-1" /> View</Button></td>
+                  <td><Button variant="ghost" size="sm"><Download className="w-4 h-4 mr-1" /> Download</Button></td>
                 </tr>
               ))}
             </tbody>
