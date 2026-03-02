@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Pencil, Ban, Trash2 } from "lucide-react";
+import { Plus, Pencil, Ban, Trash2, KeyRound } from "lucide-react";
 import { getAll, insert, update, remove, generateId, getCurrentUser, type User, type District, type Project } from "@/lib/db";
 import { toast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -19,6 +19,9 @@ const UserManagement = () => {
   const [open, setOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", email: "", password: "", role: "" as User["role"], district: "", project: "" });
+  const [resetPasswordOpen, setResetPasswordOpen] = useState(false);
+  const [resetPasswordUser, setResetPasswordUser] = useState<User | null>(null);
+  const [newPassword, setNewPassword] = useState("");
 
   useEffect(() => {
     setUsers(getAll<User>("users"));
@@ -56,6 +59,19 @@ const UserManagement = () => {
     remove("users", u.id);
     setUsers(getAll<User>("users"));
     toast({ title: `User "${u.name}" deleted` });
+  };
+
+  const handleResetPassword = () => {
+    if (!resetPasswordUser || !newPassword.trim()) {
+      toast({ title: "Please enter a new password", variant: "destructive" });
+      return;
+    }
+    update<User>("users", resetPasswordUser.id, { password: newPassword.trim() });
+    setUsers(getAll<User>("users"));
+    setResetPasswordOpen(false);
+    setResetPasswordUser(null);
+    setNewPassword("");
+    toast({ title: `Password reset for "${resetPasswordUser.name}"` });
   };
 
   return (
@@ -120,6 +136,11 @@ const UserManagement = () => {
                   <div className="flex gap-1">
                     <Button variant="ghost" size="sm" onClick={() => handleEdit(u)}><Pencil className="w-4 h-4" /></Button>
                     <Button variant="ghost" size="sm" className="text-destructive" onClick={() => handleToggleStatus(u)}><Ban className="w-4 h-4" /></Button>
+                    {u.role !== "admin" && (
+                      <Button variant="ghost" size="sm" onClick={() => { setResetPasswordUser(u); setNewPassword(""); setResetPasswordOpen(true); }}>
+                        <KeyRound className="w-4 h-4" />
+                      </Button>
+                    )}
                     {(u.role === "manager" || u.role === "employee") && (
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
@@ -144,6 +165,20 @@ const UserManagement = () => {
           </tbody>
         </table>
       </div>
+
+      <Dialog open={resetPasswordOpen} onOpenChange={(v) => { setResetPasswordOpen(v); if (!v) { setResetPasswordUser(null); setNewPassword(""); } }}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Reset Password</DialogTitle></DialogHeader>
+          <div className="space-y-4 pt-2">
+            <p className="text-sm text-muted-foreground">Set a new password for <span className="font-medium text-foreground">{resetPasswordUser?.name}</span></p>
+            <div className="space-y-1.5">
+              <Label>New Password</Label>
+              <Input type="password" placeholder="Enter new password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+            </div>
+            <Button className="w-full" onClick={handleResetPassword}>Reset Password</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 };
