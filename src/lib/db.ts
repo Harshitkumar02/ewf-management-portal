@@ -117,36 +117,13 @@ const SEED_PROJECTS: Project[] = [
   { id: "p5", name: "Agriculture Support", district: "Khulna", budget: "₹25,00,000", expense: "₹25,00,000", status: "Completed" },
 ];
 
-const SEED_ATTENDANCE: AttendanceRecord[] = [
-  { id: "a1", userId: "u4", userName: "Aisha Khan", district: "Chittagong", project: "Rural Education Program", date: "2026-03-01", checkIn: "09:02 AM", checkOut: "05:30 PM", status: "Present", location: "Chittagong Field", gps: "22.3571, 91.7834", selfie: true },
-  { id: "a2", userId: "u5", userName: "Karim Shah", district: "Sylhet", project: "Healthcare Outreach", date: "2026-03-01", checkIn: "09:15 AM", checkOut: "05:00 PM", status: "Late", location: "Sylhet Center", gps: "24.8950, 91.8690", selfie: true },
-  { id: "a3", userId: "u3", userName: "Rahul Mehta", district: "Dhaka", project: "Clean Water Initiative", date: "2026-03-01", checkIn: "—", checkOut: "—", status: "Absent", location: "—", gps: "—", selfie: false },
-  { id: "a4", userId: "u6", userName: "Tanvir Hassan", district: "Khulna", project: "Agriculture Support", date: "2026-03-01", checkIn: "08:55 AM", checkOut: "05:45 PM", status: "Present", location: "Khulna Office", gps: "22.8458, 89.5405", selfie: true },
-  { id: "a5", userId: "u4", userName: "Aisha Khan", district: "Chittagong", project: "Rural Education Program", date: "2026-02-28", checkIn: "09:15 AM", checkOut: "05:00 PM", status: "Late", location: "Chittagong Field", gps: "22.3571, 91.7834", selfie: true },
-  { id: "a6", userId: "u4", userName: "Aisha Khan", district: "Chittagong", project: "Rural Education Program", date: "2026-02-27", checkIn: "08:55 AM", checkOut: "05:45 PM", status: "Present", location: "Chittagong Field", gps: "22.3571, 91.7834", selfie: true },
-];
+const SEED_ATTENDANCE: AttendanceRecord[] = [];
 
-const SEED_TASKS: Task[] = [
-  { id: "t1", title: "Survey village water sources", assignedTo: "u4", assignedToName: "Aisha Khan", assignedBy: "u3", dueDate: "2026-03-05", status: "Pending" },
-  { id: "t2", title: "Submit field visit report", assignedTo: "u5", assignedToName: "Karim Shah", assignedBy: "u3", dueDate: "2026-03-03", status: "Completed" },
-  { id: "t3", title: "Coordinate with local health center", assignedTo: "u4", assignedToName: "Aisha Khan", assignedBy: "u3", dueDate: "2026-03-07", status: "Pending" },
-];
+const SEED_TASKS: Task[] = [];
 
-const SEED_LEAVES: LeaveRequest[] = [
-  { id: "l1", userId: "u4", userName: "Aisha Khan", from: "2026-02-15", to: "2026-02-16", reason: "Family event", status: "Approved", approvedBy: "Rahul M." },
-  { id: "l2", userId: "u4", userName: "Aisha Khan", from: "2026-01-10", to: "2026-01-10", reason: "Personal", status: "Rejected", approvedBy: "Rahul M." },
-  { id: "l3", userId: "u4", userName: "Aisha Khan", from: "2025-12-24", to: "2025-12-26", reason: "Holiday", status: "Approved", approvedBy: "Rahul M." },
-];
+const SEED_LEAVES: LeaveRequest[] = [];
 
-const SEED_REPORTS: Report[] = [
-  { id: "r1", name: "Weekly Progress - W9", project: "Clean Water Initiative", district: "Dhaka", submittedBy: "u3", submittedByName: "Rahul M.", date: "2026-02-28", type: "Weekly", status: "Approved" },
-  { id: "r2", name: "Daily Report - Mar 1", project: "Clean Water Initiative", district: "Dhaka", submittedBy: "u3", submittedByName: "Rahul M.", date: "2026-03-01", type: "Daily", status: "Pending" },
-  { id: "r3", name: "Monthly Summary - Feb", project: "Clean Water Initiative", district: "Dhaka", submittedBy: "u3", submittedByName: "Rahul M.", date: "2026-02-28", type: "Monthly", status: "Pending" },
-  { id: "r4", name: "Rural Education Report", project: "Rural Education Program", district: "Chittagong", submittedBy: "u4", submittedByName: "Aisha K.", date: "2026-02-28", type: "Monthly", status: "Approved" },
-  { id: "r5", name: "Healthcare Weekly", project: "Healthcare Outreach", district: "Sylhet", submittedBy: "u5", submittedByName: "Karim S.", date: "2026-02-27", type: "Daily", status: "Rejected" },
-  { id: "r6", name: "Women Empowerment Update", project: "Women Empowerment", district: "Rajshahi", submittedBy: "u2", submittedByName: "Nadia F.", date: "2026-03-01", type: "Weekly", status: "Pending" },
-  { id: "r7", name: "Agriculture Monthly", project: "Agriculture Support", district: "Khulna", submittedBy: "u6", submittedByName: "Tanvir H.", date: "2026-02-28", type: "Monthly", status: "Approved" },
-];
+const SEED_REPORTS: Report[] = [];
 
 const SEED_GEOFENCES: GeoFence[] = [
   { id: "g1", name: "Dhaka Office", latitude: 23.8103, longitude: 90.4125, radiusMeters: 500 },
@@ -183,7 +160,7 @@ function initCollection(collection: CollectionName): void {
 }
 
 // Force a one-time reset so user starts fresh
-const RESET_VERSION_KEY = "ngo_db_reset_v2";
+const RESET_VERSION_KEY = "ngo_db_reset_v3";
 export function initDB(): void {
   if (!localStorage.getItem(RESET_VERSION_KEY)) {
     Object.keys(SEEDS).forEach((c) => {
