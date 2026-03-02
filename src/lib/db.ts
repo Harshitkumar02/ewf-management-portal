@@ -102,28 +102,11 @@ export interface AppSettings {
 
 const SEED_USERS: User[] = [
   { id: "u1", name: "Admin User", email: "admin@ngo.org", password: "admin123", role: "admin", district: "—", project: "—", status: "Active" },
-  { id: "u2", name: "Nadia Fatima", email: "nadia@ngo.org", password: "nadia123", role: "management", district: "—", project: "—", status: "Active" },
-  { id: "u3", name: "Rahul Mehta", email: "rahul@ngo.org", password: "rahul123", role: "manager", district: "Dhaka", project: "Clean Water Initiative", status: "Active" },
-  { id: "u4", name: "Aisha Khan", email: "aisha@ngo.org", password: "aisha123", role: "employee", district: "Chittagong", project: "Rural Education Program", status: "Active" },
-  { id: "u5", name: "Karim Shah", email: "karim@ngo.org", password: "karim123", role: "employee", district: "Sylhet", project: "Healthcare Outreach", status: "Active" },
-  { id: "u6", name: "Tanvir Hassan", email: "tanvir@ngo.org", password: "tanvir123", role: "manager", district: "Khulna", project: "Agriculture Support", status: "Disabled" },
 ];
 
-const SEED_DISTRICTS: District[] = [
-  { id: "d1", name: "Dhaka", state: "Dhaka Division", projects: 12 },
-  { id: "d2", name: "Chittagong", state: "Chittagong Division", projects: 8 },
-  { id: "d3", name: "Sylhet", state: "Sylhet Division", projects: 6 },
-  { id: "d4", name: "Rajshahi", state: "Rajshahi Division", projects: 10 },
-  { id: "d5", name: "Khulna", state: "Khulna Division", projects: 5 },
-];
+const SEED_DISTRICTS: District[] = [];
 
-const SEED_PROJECTS: Project[] = [
-  { id: "p1", name: "Clean Water Initiative", district: "Dhaka", budget: "₹50,00,000", expense: "₹32,00,000", status: "Active" },
-  { id: "p2", name: "Rural Education Program", district: "Chittagong", budget: "₹30,00,000", expense: "₹28,00,000", status: "Active" },
-  { id: "p3", name: "Healthcare Outreach", district: "Sylhet", budget: "₹45,00,000", expense: "₹45,00,000", status: "Completed" },
-  { id: "p4", name: "Women Empowerment", district: "Rajshahi", budget: "₹20,00,000", expense: "₹12,00,000", status: "Active" },
-  { id: "p5", name: "Agriculture Support", district: "Khulna", budget: "₹25,00,000", expense: "₹25,00,000", status: "Completed" },
-];
+const SEED_PROJECTS: Project[] = [];
 
 const SEED_ATTENDANCE: AttendanceRecord[] = [];
 
@@ -133,13 +116,7 @@ const SEED_LEAVES: LeaveRequest[] = [];
 
 const SEED_REPORTS: Report[] = [];
 
-const SEED_GEOFENCES: GeoFence[] = [
-  { id: "g1", name: "Dhaka Office", latitude: 23.8103, longitude: 90.4125, radiusMeters: 500 },
-  { id: "g2", name: "Chittagong Field", latitude: 22.3569, longitude: 91.7832, radiusMeters: 1000 },
-  { id: "g3", name: "Sylhet Center", latitude: 24.8949, longitude: 91.8687, radiusMeters: 500 },
-  { id: "g4", name: "Rajshahi Office", latitude: 24.3745, longitude: 88.6042, radiusMeters: 500 },
-  { id: "g5", name: "Khulna Office", latitude: 22.8456, longitude: 89.5403, radiusMeters: 500 },
-];
+const SEED_GEOFENCES: GeoFence[] = [];
 
 const SEED_SETTINGS: AppSettings[] = [
   { id: "s1", maxCheckInTime: "09:10" },
@@ -173,7 +150,7 @@ function initCollection(collection: CollectionName): void {
 }
 
 // Force a one-time reset so user starts fresh
-const RESET_VERSION_KEY = "ngo_db_reset_v6";
+const RESET_VERSION_KEY = "ngo_db_reset_v7";
 export function initDB(): void {
   if (!localStorage.getItem(RESET_VERSION_KEY)) {
     Object.keys(SEEDS).forEach((c) => {
