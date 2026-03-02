@@ -6,8 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Download, Camera, MapPin, Eye, CalendarDays, CalendarRange } from "lucide-react";
-import { getAll, getCurrentUser, type AttendanceRecord, type District, type User } from "@/lib/db";
+import { Download, Camera, MapPin, Eye, CalendarDays, CalendarRange, Clock, Settings } from "lucide-react";
+import { getAll, getCurrentUser, getMaxCheckInTime, setMaxCheckInTime, type AttendanceRecord, type District, type User } from "@/lib/db";
+import { Label } from "@/components/ui/label";
+import { toast } from "@/hooks/use-toast";
 import { format, parse, startOfMonth, endOfMonth, eachDayOfInterval, isValid } from "date-fns";
 
 const statusBadge = (s: string) => {
@@ -26,6 +28,8 @@ const AttendanceView = () => {
   const [viewTab, setViewTab] = useState("daily");
   const [selectedDate, setSelectedDate] = useState(format(new Date(), "yyyy-MM-dd"));
   const [selectedMonth, setSelectedMonth] = useState(format(new Date(), "yyyy-MM"));
+  const [maxTime, setMaxTime] = useState(getMaxCheckInTime());
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   useEffect(() => {
     setRecords(getAll<AttendanceRecord>("attendance"));
@@ -99,7 +103,12 @@ const AttendanceView = () => {
       <PageHeader
         title="Attendance Overview"
         breadcrumbs={[{ label: "Admin", path: "/admin/dashboard" }, { label: "Attendance" }]}
-        action={<Button variant="outline"><Download className="w-4 h-4 mr-1.5" /> Export Excel</Button>}
+        action={
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setSettingsOpen(true)}><Settings className="w-4 h-4 mr-1.5" /> Check-In Settings</Button>
+            <Button variant="outline"><Download className="w-4 h-4 mr-1.5" /> Export Excel</Button>
+          </div>
+        }
       />
 
       <div className="bg-primary/5 border border-primary/20 rounded-md p-3 mb-4 flex items-center gap-3 text-sm">
@@ -232,6 +241,25 @@ const AttendanceView = () => {
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader><DialogTitle className="flex items-center gap-2"><Clock className="w-5 h-5" /> Max Check-In Time</DialogTitle></DialogHeader>
+          <div className="space-y-4 pt-2">
+            <p className="text-sm text-muted-foreground">Set the maximum allowed check-in time. Anyone checking in after this time will be marked as <span className="font-medium text-warning">Late</span>.</p>
+            <div className="space-y-1.5">
+              <Label>Max Check-In Time</Label>
+              <Input type="time" value={maxTime} onChange={(e) => setMaxTime(e.target.value)} />
+            </div>
+            <div className="text-xs text-muted-foreground">Current setting: <span className="font-medium text-foreground">{maxTime}</span></div>
+            <Button className="w-full" onClick={() => {
+              setMaxCheckInTime(maxTime);
+              setSettingsOpen(false);
+              toast({ title: `Max check-in time set to ${maxTime}` });
+            }}>Save Setting</Button>
+          </div>
         </DialogContent>
       </Dialog>
     </DashboardLayout>

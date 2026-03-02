@@ -4,7 +4,7 @@ import PageHeader from "@/components/layout/PageHeader";
 import { Users, CalendarCheck, FileText, ListTodo, Upload, ClipboardCheck, ClipboardList, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { getAll, getCurrentUser, insert, generateId, type User, type AttendanceRecord, type Report, type Task } from "@/lib/db";
+import { getAll, getCurrentUser, insert, generateId, isCheckInLate, type User, type AttendanceRecord, type Report, type Task } from "@/lib/db";
 import AttendanceCheckInModal from "@/components/attendance/AttendanceCheckInModal";
 
 const ManagerDashboard = () => {
@@ -94,7 +94,7 @@ const ManagerDashboard = () => {
             id: generateId(), userId: currentUser.id, userName: currentUser.name,
             district: currentUser.district, project: currentUser.project,
             date: now.toISOString().split("T")[0], checkIn: timeStr, checkOut: "—",
-            status: "Present", location: "GPS Verified",
+            status: isCheckInLate() ? "Late" : "Present", location: "GPS Verified",
             gps: `${data.latitude.toFixed(4)}, ${data.longitude.toFixed(4)}`,
             selfie: true, photo: data.photo,
           });

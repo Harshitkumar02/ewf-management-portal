@@ -6,7 +6,7 @@ import { LogIn, LogOut, CalendarDays, Upload, Camera, MapPin } from "lucide-reac
 import { Link } from "react-router-dom";
 import AttendanceCheckInModal from "@/components/attendance/AttendanceCheckInModal";
 import UploadWorkProofModal from "@/components/employee/UploadWorkProofModal";
-import { getAll, getCurrentUser, insert, update, generateId, type AttendanceRecord, type Task, type LeaveRequest } from "@/lib/db";
+import { getAll, getCurrentUser, insert, update, generateId, isCheckInLate, type AttendanceRecord, type Task, type LeaveRequest } from "@/lib/db";
 
 const EmployeeDashboard = () => {
   const currentUser = getCurrentUser();
@@ -28,7 +28,7 @@ const EmployeeDashboard = () => {
     if (!currentUser) return;
     const now = new Date();
     const timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
-    const isLate = now.getHours() >= 9 && now.getMinutes() > 10;
+    const isLate = isCheckInLate();
     insert<AttendanceRecord>("attendance", {
       id: generateId(), userId: currentUser.id, userName: currentUser.name,
       district: currentUser.district, project: currentUser.project,
