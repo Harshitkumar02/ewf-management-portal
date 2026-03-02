@@ -10,6 +10,7 @@ import ManageProjects from "./pages/admin/ManageProjects";
 import UserManagement from "./pages/admin/UserManagement";
 import AttendanceView from "./pages/admin/AttendanceView";
 import ManagementDashboard from "./pages/management/ManagementDashboard";
+import ManagementReports from "./pages/management/ManagementReports";
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
 import ReportUpload from "./pages/manager/ReportUpload";
 import TaskManagement from "./pages/manager/TaskManagement";
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/admin/users" element={<UserManagement />} />
           <Route path="/admin/attendance" element={<AttendanceView />} />
           <Route path="/management/dashboard" element={<ManagementDashboard />} />
+          <Route path="/management/reports" element={<ManagementReports />} />
           <Route path="/manager/dashboard" element={<ManagerDashboard />} />
           <Route path="/manager/reports" element={<ReportUpload />} />
           <Route path="/manager/tasks" element={<TaskManagement />} />
