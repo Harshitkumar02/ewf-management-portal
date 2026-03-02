@@ -11,6 +11,7 @@ import { getAll, getCurrentUser, getMaxCheckInTime, setMaxCheckInTime, type Atte
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { format, parse, startOfMonth, endOfMonth, eachDayOfInterval, isValid } from "date-fns";
+import * as XLSX from "xlsx";
 
 const statusBadge = (s: string) => {
   const cls = s === "Present" ? "badge-approved" : s === "Late" ? "badge-pending" : "badge-rejected";
@@ -98,6 +99,49 @@ const AttendanceView = () => {
     }));
   }, [filteredRecords, selectedMonth, users, districtFilter, designationFilter]);
 
+  const handleExportExcel = () => {
+    let data: Record<string, unknown>[];
+    let fileName: string;
+
+    if (viewTab === "daily") {
+      data = dailyRecords.map((r) => ({
+        Employee: r.userName,
+        Designation: getUserRole(r.userId),
+        District: r.district,
+        Project: r.project,
+        Date: r.date,
+        "Check-In": r.checkIn,
+        "Check-Out": r.checkOut,
+        Location: r.location,
+        GPS: r.gps,
+        Status: r.status,
+      }));
+      fileName = `Attendance_Daily_${selectedDate}.xlsx`;
+    } else {
+      data = monthlyData.map((row) => ({
+        Employee: row.userName,
+        Designation: getUserRole(row.userId),
+        Present: row.present,
+        Late: row.late,
+        Absent: row.absent,
+        "Total Days": row.total,
+        "Attendance %": `${row.attendanceRate}%`,
+      }));
+      fileName = `Attendance_Monthly_${selectedMonth}.xlsx`;
+    }
+
+    if (data.length === 0) {
+      toast({ title: "No data to export", variant: "destructive" });
+      return;
+    }
+
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, viewTab === "daily" ? "Daily Report" : "Monthly Report");
+    XLSX.writeFile(wb, fileName);
+    toast({ title: `Exported ${fileName}` });
+  };
+
   return (
     <DashboardLayout role="admin" userName={currentUser?.name || "Admin User"}>
       <PageHeader
@@ -106,7 +150,7 @@ const AttendanceView = () => {
         action={
           <div className="flex gap-2">
             <Button variant="outline" onClick={() => setSettingsOpen(true)}><Settings className="w-4 h-4 mr-1.5" /> Check-In Settings</Button>
-            <Button variant="outline"><Download className="w-4 h-4 mr-1.5" /> Export Excel</Button>
+            <Button variant="outline" onClick={handleExportExcel}><Download className="w-4 h-4 mr-1.5" /> Export Excel</Button>
           </div>
         }
       />
