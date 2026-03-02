@@ -79,6 +79,9 @@ export interface Report {
   type: "Daily" | "Weekly" | "Monthly";
   status: "Pending" | "Approved" | "Rejected";
   description?: string;
+  fileData?: string;
+  fileName?: string;
+  fileType?: string;
 }
 
 export interface GeoFence {
