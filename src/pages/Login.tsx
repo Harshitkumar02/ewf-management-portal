@@ -68,16 +68,16 @@ const Login = () => {
           {users.length > 0 && (
             <div className="mt-6 p-3 bg-muted/50 rounded-md">
               <p className="text-xs font-medium text-muted-foreground mb-2">Available Accounts:</p>
-              <div className="grid grid-cols-2 gap-1 text-xs text-muted-foreground">
+              <div className="space-y-1 text-xs text-muted-foreground">
                 {users.map((u) => (
                   <button
                     type="button"
                     key={u.id}
-                    className="contents cursor-pointer hover:text-foreground"
+                    className="flex items-start gap-2 w-full text-left cursor-pointer hover:text-foreground"
                     onClick={() => { setEmail(u.email); setPassword(u.password); }}
                   >
-                    <span className="capitalize">{u.role}:</span>
-                    <span>{u.email} / {u.password}</span>
+                    <span className="capitalize shrink-0 w-20">{u.role}:</span>
+                    <span className="break-all">{u.email} / {u.password}</span>
                   </button>
                 ))}
               </div>
