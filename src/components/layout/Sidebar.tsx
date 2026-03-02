@@ -28,6 +28,7 @@ const managerMenu = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/manager/dashboard" },
   { label: "Upload Report", icon: Upload, path: "/manager/reports" },
   { label: "Tasks", icon: ListTodo, path: "/manager/tasks" },
+  { label: "Leave", icon: CalendarDays, path: "/manager/leave" },
 ];
 
 const employeeMenu = [
