@@ -10,6 +10,7 @@ export interface User {
   district: string;
   project: string;
   status: "Active" | "Disabled";
+  profilePhoto?: string;
 }
 
 export interface District {
