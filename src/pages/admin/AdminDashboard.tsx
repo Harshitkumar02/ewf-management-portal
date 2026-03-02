@@ -6,10 +6,24 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { getAll, getCurrentUser, type District, type Project, type User, type Report } from "@/lib/db";
+import { toast } from "@/hooks/use-toast";
 
 const statusBadge = (status: string) => {
   const cls = status === "Pending" ? "badge-pending" : status === "Approved" ? "badge-approved" : "badge-rejected";
   return <span className={`badge-status ${cls}`}>{status}</span>;
+};
+
+const handleDownload = (report: Report) => {
+  if (!report.fileData) {
+    toast({ title: "No file attached", description: "This report has no downloadable file.", variant: "destructive" });
+    return;
+  }
+  const link = document.createElement("a");
+  link.href = report.fileData;
+  link.download = report.fileName || `${report.name}.pdf`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 };
 
 const AdminDashboard = () => {
@@ -84,7 +98,7 @@ const AdminDashboard = () => {
                   <td>{r.district}</td>
                   <td>{r.submittedByName}</td>
                   <td>{statusBadge(r.status)}</td>
-                  <td><Button variant="ghost" size="sm"><Download className="w-4 h-4 mr-1" /> Download</Button></td>
+                  <td><Button variant="ghost" size="sm" onClick={() => handleDownload(r)}><Download className="w-4 h-4 mr-1" /> Download</Button></td>
                 </tr>
               ))}
             </tbody>
