@@ -1,12 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import PageHeader from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Download, Camera, MapPin, Eye } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Download, Camera, MapPin, Eye, CalendarDays, CalendarRange } from "lucide-react";
 import { getAll, getCurrentUser, type AttendanceRecord, type District, type User } from "@/lib/db";
+import { format, parse, startOfMonth, endOfMonth, eachDayOfInterval, isValid } from "date-fns";
 
 const statusBadge = (s: string) => {
   const cls = s === "Present" ? "badge-approved" : s === "Late" ? "badge-pending" : "badge-rejected";
@@ -21,6 +23,9 @@ const AttendanceView = () => {
   const [selectedRecord, setSelectedRecord] = useState<AttendanceRecord | null>(null);
   const [districtFilter, setDistrictFilter] = useState("all");
   const [designationFilter, setDesignationFilter] = useState("all");
+  const [viewTab, setViewTab] = useState("daily");
+  const [selectedDate, setSelectedDate] = useState(format(new Date(), "yyyy-MM-dd"));
+  const [selectedMonth, setSelectedMonth] = useState(format(new Date(), "yyyy-MM"));
 
   useEffect(() => {
     setRecords(getAll<AttendanceRecord>("attendance"));
@@ -34,6 +39,60 @@ const AttendanceView = () => {
     const roleLabels: Record<string, string> = { management: "Management", manager: "Project Manager", employee: "Employee", admin: "Admin" };
     return roleLabels[user.role] || user.role;
   };
+
+  const filteredRecords = useMemo(() => {
+    return records.filter((r) => {
+      const matchDistrict = districtFilter === "all" || r.district === districtFilter;
+      const matchDesignation = designationFilter === "all" || users.find((u) => u.id === r.userId)?.role === designationFilter;
+      return matchDistrict && matchDesignation;
+    });
+  }, [records, districtFilter, designationFilter, users]);
+
+  const dailyRecords = useMemo(() => {
+    return filteredRecords.filter((r) => r.date === selectedDate);
+  }, [filteredRecords, selectedDate]);
+
+  const monthlyData = useMemo(() => {
+    const monthDate = parse(selectedMonth + "-01", "yyyy-MM-dd", new Date());
+    if (!isValid(monthDate)) return [];
+    const start = startOfMonth(monthDate);
+    const end = endOfMonth(monthDate);
+    const monthRecords = filteredRecords.filter((r) => {
+      const d = parse(r.date, "yyyy-MM-dd", new Date());
+      return isValid(d) && d >= start && d <= end;
+    });
+
+    // Group by user
+    const userMap = new Map<string, { userName: string; userId: string; present: number; late: number; absent: number; total: number }>();
+    
+    // Get all active users for the month
+    const relevantUsers = users.filter((u) => {
+      if (districtFilter !== "all" && u.district !== districtFilter) return false;
+      if (designationFilter !== "all" && u.role !== designationFilter) return false;
+      return u.role !== "admin";
+    });
+
+    const daysInMonth = eachDayOfInterval({ start, end }).length;
+
+    relevantUsers.forEach((u) => {
+      userMap.set(u.id, { userName: u.name, userId: u.id, present: 0, late: 0, absent: 0, total: daysInMonth });
+    });
+
+    monthRecords.forEach((r) => {
+      const entry = userMap.get(r.userId);
+      if (entry) {
+        if (r.status === "Present") entry.present++;
+        else if (r.status === "Late") entry.late++;
+        else if (r.status === "Absent") entry.absent++;
+      }
+    });
+
+    return Array.from(userMap.values()).map((entry) => ({
+      ...entry,
+      absent: entry.total - entry.present - entry.late,
+      attendanceRate: entry.total > 0 ? Math.round(((entry.present + entry.late) / entry.total) * 100) : 0,
+    }));
+  }, [filteredRecords, selectedMonth, users, districtFilter, designationFilter]);
 
   return (
     <DashboardLayout role="admin" userName={currentUser?.name || "Admin User"}>
@@ -52,7 +111,6 @@ const AttendanceView = () => {
       </div>
 
       <div className="flex flex-wrap gap-3 mb-4">
-        <Input type="date" className="w-44" defaultValue="2026-03-01" />
         <Select value={districtFilter} onValueChange={setDistrictFilter}>
           <SelectTrigger className="w-40"><SelectValue placeholder="All Districts" /></SelectTrigger>
           <SelectContent>
@@ -71,38 +129,83 @@ const AttendanceView = () => {
         </Select>
       </div>
 
-      <div className="bg-card border rounded-md shadow-sm overflow-x-auto">
-        <table className="data-table">
-          <thead>
-            <tr><th>Employee</th><th>District</th><th>Project</th><th>Date</th><th>Check-in</th><th>Check-out</th><th>Location</th><th>Selfie</th><th>Status</th><th>Action</th></tr>
-          </thead>
-          <tbody>
-            {records
-              .filter((r) => {
-                const matchDistrict = districtFilter === "all" || r.district === districtFilter;
-                const matchDesignation = designationFilter === "all" || users.find((u) => u.id === r.userId)?.role === designationFilter;
-                return matchDistrict && matchDesignation;
-              })
-              .map((r) => (
-              <tr key={r.id}>
-                <td className="font-medium">
-                  <div>{r.userName}</div>
-                  <div className="text-xs text-muted-foreground">{getUserRole(r.userId)}</div>
-                </td>
-                <td>{r.district}</td>
-                <td>{r.project}</td>
-                <td>{r.date}</td>
-                <td>{r.checkIn}</td>
-                <td>{r.checkOut}</td>
-                <td>{r.location !== "—" ? <span className="flex items-center gap-1 text-muted-foreground text-xs"><MapPin className="w-3 h-3 text-success" /> {r.location}</span> : "—"}</td>
-                <td>{r.selfie ? <span className="flex items-center gap-1 text-xs text-success"><Camera className="w-3 h-3" /> Verified</span> : <span className="text-xs text-muted-foreground">—</span>}</td>
-                <td>{statusBadge(r.status)}</td>
-                <td>{r.selfie && <Button variant="ghost" size="sm" onClick={() => setSelectedRecord(r)}><Eye className="w-4 h-4 mr-1" /> View</Button>}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Tabs value={viewTab} onValueChange={setViewTab} className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="daily" className="gap-1.5"><CalendarDays className="w-4 h-4" /> Daily Report</TabsTrigger>
+          <TabsTrigger value="monthly" className="gap-1.5"><CalendarRange className="w-4 h-4" /> Monthly Report</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="daily">
+          <div className="mb-4">
+            <Input type="date" className="w-44" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} />
+          </div>
+          <div className="bg-card border rounded-md shadow-sm overflow-x-auto">
+            <table className="data-table">
+              <thead>
+                <tr><th>Employee</th><th>District</th><th>Project</th><th>Date</th><th>Check-in</th><th>Check-out</th><th>Location</th><th>Selfie</th><th>Status</th><th>Action</th></tr>
+              </thead>
+              <tbody>
+                {dailyRecords.length === 0 && (
+                  <tr><td colSpan={10} className="text-center text-muted-foreground py-8">No attendance records for this date.</td></tr>
+                )}
+                {dailyRecords.map((r) => (
+                  <tr key={r.id}>
+                    <td className="font-medium">
+                      <div>{r.userName}</div>
+                      <div className="text-xs text-muted-foreground">{getUserRole(r.userId)}</div>
+                    </td>
+                    <td>{r.district}</td>
+                    <td>{r.project}</td>
+                    <td>{r.date}</td>
+                    <td>{r.checkIn}</td>
+                    <td>{r.checkOut}</td>
+                    <td>{r.location !== "—" ? <span className="flex items-center gap-1 text-muted-foreground text-xs"><MapPin className="w-3 h-3 text-success" /> {r.location}</span> : "—"}</td>
+                    <td>{r.selfie ? <span className="flex items-center gap-1 text-xs text-success"><Camera className="w-3 h-3" /> Verified</span> : <span className="text-xs text-muted-foreground">—</span>}</td>
+                    <td>{statusBadge(r.status)}</td>
+                    <td>{r.selfie && <Button variant="ghost" size="sm" onClick={() => setSelectedRecord(r)}><Eye className="w-4 h-4 mr-1" /> View</Button>}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="monthly">
+          <div className="mb-4">
+            <Input type="month" className="w-44" value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)} />
+          </div>
+          <div className="bg-card border rounded-md shadow-sm overflow-x-auto">
+            <table className="data-table">
+              <thead>
+                <tr><th>Employee</th><th>Designation</th><th>Present</th><th>Late</th><th>Absent</th><th>Total Days</th><th>Attendance %</th></tr>
+              </thead>
+              <tbody>
+                {monthlyData.length === 0 && (
+                  <tr><td colSpan={7} className="text-center text-muted-foreground py-8">No data for this month.</td></tr>
+                )}
+                {monthlyData.map((row) => (
+                  <tr key={row.userId}>
+                    <td className="font-medium">{row.userName}</td>
+                    <td className="text-muted-foreground">{getUserRole(row.userId)}</td>
+                    <td><span className="text-success font-medium">{row.present}</span></td>
+                    <td><span className="text-warning font-medium">{row.late}</span></td>
+                    <td><span className="text-destructive font-medium">{row.absent}</span></td>
+                    <td>{row.total}</td>
+                    <td>
+                      <div className="flex items-center gap-2">
+                        <div className="w-16 h-2 rounded-full bg-muted overflow-hidden">
+                          <div className="h-full rounded-full bg-primary" style={{ width: `${row.attendanceRate}%` }} />
+                        </div>
+                        <span className="text-sm font-medium">{row.attendanceRate}%</span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </TabsContent>
+      </Tabs>
 
       <Dialog open={!!selectedRecord} onOpenChange={() => setSelectedRecord(null)}>
         <DialogContent className="max-w-md">
