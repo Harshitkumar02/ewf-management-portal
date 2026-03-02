@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { LogIn, LogOut, CalendarDays, Upload, Camera, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import AttendanceCheckInModal from "@/components/attendance/AttendanceCheckInModal";
+import UploadWorkProofModal from "@/components/employee/UploadWorkProofModal";
 import { getAll, getCurrentUser, insert, generateId, type AttendanceRecord, type Task, type LeaveRequest } from "@/lib/db";
 
 const EmployeeDashboard = () => {
   const currentUser = getCurrentUser();
   const [checkInOpen, setCheckInOpen] = useState(false);
   const [checkOutOpen, setCheckOutOpen] = useState(false);
+  const [uploadOpen, setUploadOpen] = useState(false);
   const [attendance, setAttendance] = useState<AttendanceRecord[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [leaves, setLeaves] = useState<LeaveRequest[]>([]);
@@ -52,7 +54,7 @@ const EmployeeDashboard = () => {
         <Button onClick={() => setCheckInOpen(true)}><Camera className="w-4 h-4 mr-1.5" /> Check-In</Button>
         <Button variant="outline" onClick={() => setCheckOutOpen(true)}><Camera className="w-4 h-4 mr-1.5" /> Check-Out</Button>
         <Link to="/employee/leave"><Button variant="outline"><CalendarDays className="w-4 h-4 mr-1.5" /> Apply Leave</Button></Link>
-        <Button variant="outline"><Upload className="w-4 h-4 mr-1.5" /> Upload Work Proof</Button>
+        <Button variant="outline" onClick={() => setUploadOpen(true)}><Upload className="w-4 h-4 mr-1.5" /> Upload Work Proof</Button>
       </div>
 
       <div className="bg-card border rounded-md shadow-sm p-4 mb-6">
@@ -130,6 +132,7 @@ const EmployeeDashboard = () => {
 
       <AttendanceCheckInModal open={checkInOpen} onOpenChange={setCheckInOpen} type="check-in" onSubmit={handleCheckIn} />
       <AttendanceCheckInModal open={checkOutOpen} onOpenChange={setCheckOutOpen} type="check-out" />
+      <UploadWorkProofModal open={uploadOpen} onOpenChange={setUploadOpen} />
     </DashboardLayout>
   );
 };
