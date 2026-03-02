@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { getAll, type GeoFence } from "@/lib/db";
 
 interface GeolocationState {
   latitude: number | null;
@@ -8,7 +9,7 @@ interface GeolocationState {
   loading: boolean;
 }
 
-interface GeoFenceConfig {
+export interface GeoFenceConfig {
   latitude: number;
   longitude: number;
   radiusMeters: number;
@@ -89,7 +90,18 @@ export function checkGeoFence(
   };
 }
 
-// Demo geo-fence locations for projects
+// Load geo-fences from localStorage DB
+export function getProjectGeoFences(): GeoFenceConfig[] {
+  const fences = getAll<GeoFence>("geofences");
+  return fences.map((f) => ({
+    name: f.name,
+    latitude: f.latitude,
+    longitude: f.longitude,
+    radiusMeters: f.radiusMeters,
+  }));
+}
+
+// Keep backward compat export
 export const PROJECT_GEO_FENCES: GeoFenceConfig[] = [
   { name: "Dhaka Office", latitude: 23.8103, longitude: 90.4125, radiusMeters: 500 },
   { name: "Chittagong Field", latitude: 22.3569, longitude: 91.7832, radiusMeters: 1000 },
