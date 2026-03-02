@@ -4,9 +4,20 @@ import PageHeader from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Eye, CheckCircle, XCircle } from "lucide-react";
+import { Search, Eye, CheckCircle, XCircle, Download } from "lucide-react";
 import { getAll, getCurrentUser, update, type Report } from "@/lib/db";
 import { toast } from "@/hooks/use-toast";
+
+const downloadReport = (report: Report) => {
+  if (report.fileData && report.fileName) {
+    const link = document.createElement("a");
+    link.href = report.fileData;
+    link.download = report.fileName;
+    link.click();
+  } else {
+    toast({ title: "No file attached to this report", variant: "destructive" });
+  }
+};
 
 const statusBadge = (status: string) => {
   const cls = status === "Pending" ? "badge-pending" : status === "Approved" ? "badge-approved" : "badge-rejected";
@@ -80,7 +91,7 @@ const ManagementReports = () => {
                   <td>{statusBadge(r.status)}</td>
                   <td>
                     <div className="flex gap-1">
-                      <Button variant="ghost" size="sm"><Eye className="w-4 h-4 mr-1" /> View</Button>
+                      <Button variant="ghost" size="sm" onClick={() => downloadReport(r)}><Download className="w-4 h-4 mr-1" /> {r.fileData ? "Download" : "View"}</Button>
                       {r.status === "Pending" && (
                         <>
                           <Button variant="ghost" size="sm" className="text-success" onClick={() => handleAction(r.id, "Approved")}><CheckCircle className="w-4 h-4" /></Button>

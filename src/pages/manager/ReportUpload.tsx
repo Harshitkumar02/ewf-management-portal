@@ -13,6 +13,7 @@ const ReportUpload = () => {
   const currentUser = getCurrentUser();
   const [reports, setReports] = useState<Report[]>([]);
   const [form, setForm] = useState({ type: "" as Report["type"], description: "" });
+  const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
     setReports(getAll<Report>("reports").filter((r) => r.submittedBy === currentUser?.id));
@@ -20,17 +21,30 @@ const ReportUpload = () => {
 
   const handleSubmit = () => {
     if (!form.type || !currentUser) { toast({ title: "Please select report type", variant: "destructive" }); return; }
-    const now = new Date();
-    insert<Report>("reports", {
-      id: generateId(), name: `${form.type} Report - ${now.toLocaleDateString()}`,
-      project: currentUser.project, district: currentUser.district,
-      submittedBy: currentUser.id, submittedByName: currentUser.name,
-      date: now.toISOString().split("T")[0], type: form.type,
-      status: "Pending", description: form.description,
-    });
-    setReports(getAll<Report>("reports").filter((r) => r.submittedBy === currentUser.id));
-    setForm({ type: "" as Report["type"], description: "" });
-    toast({ title: "Report submitted successfully" });
+
+    const saveReport = (fileData?: string, fileName?: string, fileType?: string) => {
+      const now = new Date();
+      insert<Report>("reports", {
+        id: generateId(), name: `${form.type} Report - ${now.toLocaleDateString()}`,
+        project: currentUser.project, district: currentUser.district,
+        submittedBy: currentUser.id, submittedByName: currentUser.name,
+        date: now.toISOString().split("T")[0], type: form.type,
+        status: "Pending", description: form.description,
+        fileData, fileName, fileType,
+      });
+      setReports(getAll<Report>("reports").filter((r) => r.submittedBy === currentUser.id));
+      setForm({ type: "" as Report["type"], description: "" });
+      setFile(null);
+      toast({ title: "Report submitted successfully" });
+    };
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => saveReport(reader.result as string, file.name, file.type);
+      reader.readAsDataURL(file);
+    } else {
+      saveReport();
+    }
   };
 
   return (
@@ -52,7 +66,7 @@ const ReportUpload = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-1.5"><Label>Upload File</Label><Input type="file" /></div>
+            <div className="space-y-1.5"><Label>Upload File</Label><Input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} /></div>
             <div className="space-y-1.5"><Label>Description</Label><Textarea placeholder="Add report description..." rows={4} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
             <Button className="w-full" onClick={handleSubmit}>Submit Report</Button>
           </div>
