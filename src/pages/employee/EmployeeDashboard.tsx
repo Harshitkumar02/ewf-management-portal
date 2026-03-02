@@ -6,7 +6,7 @@ import { LogIn, LogOut, CalendarDays, Upload, Camera, MapPin } from "lucide-reac
 import { Link } from "react-router-dom";
 import AttendanceCheckInModal from "@/components/attendance/AttendanceCheckInModal";
 import UploadWorkProofModal from "@/components/employee/UploadWorkProofModal";
-import { getAll, getCurrentUser, insert, update, generateId, isCheckInLate, type AttendanceRecord, type Task, type LeaveRequest } from "@/lib/db";
+import { getAll, getCurrentUser, insert, update, generateId, isCheckInLate, getLocalDate, getLocalTime, type AttendanceRecord, type Task, type LeaveRequest } from "@/lib/db";
 
 const EmployeeDashboard = () => {
   const currentUser = getCurrentUser();
@@ -27,12 +27,13 @@ const EmployeeDashboard = () => {
   const handleCheckIn = (data: { photo: string; latitude: number; longitude: number; timestamp: string; type: string }) => {
     if (!currentUser) return;
     const now = new Date();
-    const timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
+    const timeStr = getLocalTime(now);
+    const dateStr = getLocalDate(now);
     const isLate = isCheckInLate();
     insert<AttendanceRecord>("attendance", {
       id: generateId(), userId: currentUser.id, userName: currentUser.name,
       district: currentUser.district, project: currentUser.project,
-      date: now.toISOString().split("T")[0], checkIn: timeStr, checkOut: "—",
+      date: dateStr, checkIn: timeStr, checkOut: "—",
       status: isLate ? "Late" : "Present", location: "GPS Verified",
       gps: `${data.latitude.toFixed(4)}, ${data.longitude.toFixed(4)}`,
       selfie: true, photo: data.photo,
@@ -42,12 +43,12 @@ const EmployeeDashboard = () => {
 
   const handleCheckOut = (data: { photo: string; latitude: number; longitude: number; timestamp: string; type: string }) => {
     if (!currentUser) return;
-    const today = new Date().toISOString().split("T")[0];
+    const now = new Date();
+    const today = getLocalDate(now);
     const todayRecord = getAll<AttendanceRecord>("attendance").find(
       (a) => a.userId === currentUser.id && a.date === today && a.checkOut === "—"
     );
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
+    const timeStr = getLocalTime(now);
     if (todayRecord) {
       update<AttendanceRecord>("attendance", todayRecord.id, { checkOut: timeStr });
     } else {
@@ -67,7 +68,7 @@ const EmployeeDashboard = () => {
   const absentCount = attendance.filter((a) => a.status === "Absent").length;
   const lateCount = attendance.filter((a) => a.status === "Late").length;
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = getLocalDate();
   const todayRecord = attendance.find((a) => a.date === today);
   const hasCheckedIn = !!todayRecord;
   const hasCheckedOut = !!todayRecord && todayRecord.checkOut !== "—";

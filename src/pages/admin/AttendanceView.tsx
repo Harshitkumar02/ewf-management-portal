@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Download, Camera, MapPin, Eye, CalendarDays, CalendarRange, Clock, Settings } from "lucide-react";
-import { getAll, getCurrentUser, getMaxCheckInTime, setMaxCheckInTime, type AttendanceRecord, type District, type User } from "@/lib/db";
+import { getAll, getCurrentUser, getMaxCheckInTime, setMaxCheckInTime, getLocalDate, type AttendanceRecord, type District, type User } from "@/lib/db";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { format, parse, startOfMonth, endOfMonth, eachDayOfInterval, isValid } from "date-fns";
@@ -27,7 +27,7 @@ const AttendanceView = () => {
   const [districtFilter, setDistrictFilter] = useState("all");
   const [designationFilter, setDesignationFilter] = useState("all");
   const [viewTab, setViewTab] = useState("daily");
-  const [selectedDate, setSelectedDate] = useState(format(new Date(), "yyyy-MM-dd"));
+  const [selectedDate, setSelectedDate] = useState(getLocalDate());
   const [selectedMonth, setSelectedMonth] = useState(format(new Date(), "yyyy-MM"));
   const [maxTime, setMaxTime] = useState(getMaxCheckInTime());
   const [settingsOpen, setSettingsOpen] = useState(false);

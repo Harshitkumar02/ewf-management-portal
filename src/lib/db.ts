@@ -248,3 +248,20 @@ export function isCheckInLate(): boolean {
   const now = new Date();
   return now.getHours() > maxH || (now.getHours() === maxH && now.getMinutes() > maxM);
 }
+
+/** Returns local date as YYYY-MM-DD */
+export function getLocalDate(d: Date = new Date()): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+/** Returns local time as HH:MM AM/PM */
+export function getLocalTime(d: Date = new Date()): string {
+  let h = d.getHours();
+  const m = String(d.getMinutes()).padStart(2, "0");
+  const ampm = h >= 12 ? "PM" : "AM";
+  h = h % 12 || 12;
+  return `${String(h).padStart(2, "0")}:${m} ${ampm}`;
+}
