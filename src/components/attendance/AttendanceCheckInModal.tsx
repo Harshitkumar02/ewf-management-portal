@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useCamera } from "@/hooks/use-camera";
-import { useGeolocation, checkGeoFence, getProjectGeoFences } from "@/hooks/use-geolocation";
-import { Camera, MapPin, CheckCircle, XCircle, RefreshCw, AlertTriangle } from "lucide-react";
+import { useGeolocation } from "@/hooks/use-geolocation";
+import { Camera, MapPin, CheckCircle, RefreshCw, AlertTriangle } from "lucide-react";
 
 interface AttendanceCheckInModalProps {
   open: boolean;
@@ -15,7 +15,6 @@ interface AttendanceCheckInModalProps {
 const AttendanceCheckInModal = ({ open, onOpenChange, type, onSubmit }: AttendanceCheckInModalProps) => {
   const { videoRef, canvasRef, photo, error: cameraError, active, startCamera, capturePhoto, retakePhoto, stopCamera } = useCamera();
   const { latitude, longitude, accuracy, error: geoError, loading: geoLoading, requestLocation } = useGeolocation();
-  const [geoFenceResult, setGeoFenceResult] = useState<{ withinFence: boolean; distanceMeters: number; fenceName: string } | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -25,26 +24,10 @@ const AttendanceCheckInModal = ({ open, onOpenChange, type, onSubmit }: Attendan
       startCamera();
       requestLocation();
       setSubmitted(false);
-      setGeoFenceResult(null);
     } else {
       stopCamera();
     }
   }, [open]);
-
-  // Check geo-fence when location is available
-  useEffect(() => {
-    if (latitude && longitude) {
-      const fences = getProjectGeoFences();
-      let closest: { withinFence: boolean; distanceMeters: number; fenceName: string } | null = null;
-      for (const fence of fences) {
-        const result = checkGeoFence(latitude, longitude, fence);
-        if (!closest || result.distanceMeters < closest.distanceMeters) {
-          closest = { ...result, fenceName: fence.name };
-        }
-      }
-      setGeoFenceResult(closest);
-    }
-  }, [latitude, longitude]);
 
   const handleCapture = () => {
     capturePhoto();
@@ -66,7 +49,7 @@ const AttendanceCheckInModal = ({ open, onOpenChange, type, onSubmit }: Attendan
     }, 1000);
   };
 
-  const canSubmit = photo && latitude && longitude && geoFenceResult?.withinFence && !submitting;
+  const canSubmit = photo && latitude && longitude && !submitting;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -87,7 +70,7 @@ const AttendanceCheckInModal = ({ open, onOpenChange, type, onSubmit }: Attendan
               {type === "check-in" ? "Checked In" : "Checked Out"} Successfully!
             </h3>
             <p className="text-sm text-muted-foreground">
-              {new Date().toLocaleTimeString()} — {geoFenceResult?.fenceName}
+              {new Date().toLocaleTimeString()}
             </p>
             <Button className="mt-4" onClick={() => onOpenChange(false)}>Done</Button>
           </div>
@@ -154,36 +137,17 @@ const AttendanceCheckInModal = ({ open, onOpenChange, type, onSubmit }: Attendan
 
               {geoError && (
                 <div className="flex items-start gap-2 text-sm text-destructive">
-                  <XCircle className="w-4 h-4 mt-0.5 shrink-0" />
+                  <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
                   <span>{geoError}</span>
                 </div>
               )}
 
               {latitude && longitude && (
                 <div className="space-y-1.5">
-                  <div className="text-xs text-muted-foreground">
-                    GPS: {latitude.toFixed(6)}, {longitude.toFixed(6)} (±{accuracy?.toFixed(0)}m)
+                  <div className="flex items-center gap-2 text-sm rounded-md p-2 bg-success/10 text-success">
+                    <CheckCircle className="w-4 h-4 shrink-0" />
+                    <span>Location captured: {latitude.toFixed(6)}, {longitude.toFixed(6)} (±{accuracy?.toFixed(0)}m)</span>
                   </div>
-
-                  {geoFenceResult && (
-                    <div className={`flex items-center gap-2 text-sm rounded-md p-2 ${
-                      geoFenceResult.withinFence
-                        ? "bg-success/10 text-success"
-                        : "bg-destructive/10 text-destructive"
-                    }`}>
-                      {geoFenceResult.withinFence ? (
-                        <>
-                          <CheckCircle className="w-4 h-4 shrink-0" />
-                          <span>Within <strong>{geoFenceResult.fenceName}</strong> zone ({geoFenceResult.distanceMeters}m away)</span>
-                        </>
-                      ) : (
-                        <>
-                          <XCircle className="w-4 h-4 shrink-0" />
-                          <span>Outside geo-fence. Nearest: <strong>{geoFenceResult.fenceName}</strong> ({geoFenceResult.distanceMeters}m away)</span>
-                        </>
-                      )}
-                    </div>
-                  )}
                 </div>
               )}
 
@@ -213,11 +177,6 @@ const AttendanceCheckInModal = ({ open, onOpenChange, type, onSubmit }: Attendan
               )}
             </Button>
 
-            {!geoFenceResult?.withinFence && photo && latitude && (
-              <p className="text-xs text-center text-destructive">
-                You must be within the designated project area to {type}.
-              </p>
-            )}
           </div>
         )}
       </DialogContent>
