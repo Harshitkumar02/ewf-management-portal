@@ -6,7 +6,7 @@ import { LogIn, LogOut, CalendarDays, Upload, Camera, MapPin } from "lucide-reac
 import { Link } from "react-router-dom";
 import AttendanceCheckInModal from "@/components/attendance/AttendanceCheckInModal";
 import UploadWorkProofModal from "@/components/employee/UploadWorkProofModal";
-import { getAll, getCurrentUser, insert, generateId, type AttendanceRecord, type Task, type LeaveRequest } from "@/lib/db";
+import { getAll, getCurrentUser, insert, update, generateId, type AttendanceRecord, type Task, type LeaveRequest } from "@/lib/db";
 
 const EmployeeDashboard = () => {
   const currentUser = getCurrentUser();
@@ -37,6 +37,29 @@ const EmployeeDashboard = () => {
       gps: `${data.latitude.toFixed(4)}, ${data.longitude.toFixed(4)}`,
       selfie: true, photo: data.photo,
     });
+    setAttendance(getAll<AttendanceRecord>("attendance").filter((a) => a.userId === currentUser.id));
+  };
+
+  const handleCheckOut = (data: { photo: string; latitude: number; longitude: number; timestamp: string; type: string }) => {
+    if (!currentUser) return;
+    const today = new Date().toISOString().split("T")[0];
+    const todayRecord = getAll<AttendanceRecord>("attendance").find(
+      (a) => a.userId === currentUser.id && a.date === today && a.checkOut === "—"
+    );
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
+    if (todayRecord) {
+      update<AttendanceRecord>("attendance", todayRecord.id, { checkOut: timeStr });
+    } else {
+      insert<AttendanceRecord>("attendance", {
+        id: generateId(), userId: currentUser.id, userName: currentUser.name,
+        district: currentUser.district, project: currentUser.project,
+        date: today, checkIn: "—", checkOut: timeStr,
+        status: "Present", location: "GPS Verified",
+        gps: `${data.latitude.toFixed(4)}, ${data.longitude.toFixed(4)}`,
+        selfie: true, photo: data.photo,
+      });
+    }
     setAttendance(getAll<AttendanceRecord>("attendance").filter((a) => a.userId === currentUser.id));
   };
 
@@ -131,7 +154,7 @@ const EmployeeDashboard = () => {
       </div>
 
       <AttendanceCheckInModal open={checkInOpen} onOpenChange={setCheckInOpen} type="check-in" onSubmit={handleCheckIn} />
-      <AttendanceCheckInModal open={checkOutOpen} onOpenChange={setCheckOutOpen} type="check-out" />
+      <AttendanceCheckInModal open={checkOutOpen} onOpenChange={setCheckOutOpen} type="check-out" onSubmit={handleCheckOut} />
       <UploadWorkProofModal open={uploadOpen} onOpenChange={setUploadOpen} />
     </DashboardLayout>
   );
