@@ -32,9 +32,9 @@ const PageHeader = ({ title, breadcrumbs, action }: PageHeaderProps) => {
           </span>
         ))}
       </div>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <h1 className="page-title">{title}</h1>
-        {action}
+        {action && <div className="w-full sm:w-auto">{action}</div>}
       </div>
     </div>
   );

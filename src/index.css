@@ -124,13 +124,30 @@
     @apply w-full text-sm;
   }
   .data-table th {
-    @apply bg-secondary text-muted-foreground font-semibold text-left px-4 py-3 border-b text-xs uppercase tracking-wider;
+    @apply bg-secondary text-muted-foreground font-semibold text-left px-3 sm:px-4 py-2.5 sm:py-3 border-b text-xs uppercase tracking-wider whitespace-nowrap;
   }
   .data-table td {
-    @apply px-4 py-3 border-b;
+    @apply px-3 sm:px-4 py-2.5 sm:py-3 border-b;
   }
   .data-table tr:hover td {
     @apply bg-muted/50;
+  }
+
+  /* Mobile card table view */
+  .mobile-card-list {
+    @apply divide-y;
+  }
+  .mobile-card-item {
+    @apply p-4 space-y-2;
+  }
+  .mobile-card-row {
+    @apply flex items-start justify-between gap-2 text-sm;
+  }
+  .mobile-card-label {
+    @apply text-muted-foreground shrink-0 text-xs;
+  }
+  .mobile-card-value {
+    @apply text-right font-medium;
   }
 
   .page-header {
