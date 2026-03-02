@@ -1,43 +1,58 @@
+import { useEffect, useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import PageHeader from "@/components/layout/PageHeader";
 import { FolderOpen, CalendarCheck, Wallet, TrendingDown } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
+import { getAll, getCurrentUser, type Project, type AttendanceRecord, type District, type Report } from "@/lib/db";
 
-const stats = [
-  { label: "Active Projects", value: "12", icon: FolderOpen, color: "stat-card-icon-blue" },
-  { label: "Attendance %", value: "87%", icon: CalendarCheck, color: "stat-card-icon-green" },
-  { label: "Total Budget", value: "₹1.7Cr", icon: Wallet, color: "stat-card-icon-teal" },
-  { label: "Total Expenses", value: "₹1.2Cr", icon: TrendingDown, color: "stat-card-icon-orange" },
-];
-
-const barData = [
-  { name: "Clean Water", performance: 85 },
-  { name: "Education", performance: 72 },
-  { name: "Healthcare", performance: 95 },
-  { name: "Women Emp.", performance: 60 },
-  { name: "Agriculture", performance: 88 },
-];
-
-const pieData = [
-  { name: "Budget", value: 17000000 },
-  { name: "Expense", value: 12000000 },
-];
 const COLORS = ["hsl(215,60%,28%)", "hsl(185,55%,35%)"];
 
-const districtReports = [
-  { district: "Dhaka", submitted: 12, approved: 10, pending: 2 },
-  { district: "Chittagong", submitted: 8, approved: 7, pending: 1 },
-  { district: "Sylhet", submitted: 6, approved: 4, pending: 2 },
-  { district: "Rajshahi", submitted: 10, approved: 9, pending: 1 },
-];
-
 const ManagementDashboard = () => {
+  const currentUser = getCurrentUser();
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [districtReports, setDistrictReports] = useState<{ district: string; submitted: number; approved: number; pending: number }[]>([]);
+  const [stats, setStats] = useState({ active: 0, attendance: "0%", budget: "₹0", expense: "₹0" });
+
+  useEffect(() => {
+    const allProjects = getAll<Project>("projects");
+    const allAttendance = getAll<AttendanceRecord>("attendance");
+    const allReports = getAll<Report>("reports");
+    const allDistricts = getAll<District>("districts");
+
+    setProjects(allProjects);
+    const activeCount = allProjects.filter((p) => p.status === "Active").length;
+    const totalAtt = allAttendance.length || 1;
+    const presentAtt = allAttendance.filter((a) => a.status !== "Absent").length;
+
+    setStats({
+      active: activeCount,
+      attendance: `${Math.round((presentAtt / totalAtt) * 100)}%`,
+      budget: "₹1.7Cr",
+      expense: "₹1.2Cr",
+    });
+
+    setDistrictReports(allDistricts.map((d) => {
+      const dReports = allReports.filter((r) => r.district === d.name);
+      return { district: d.name, submitted: dReports.length, approved: dReports.filter((r) => r.status === "Approved").length, pending: dReports.filter((r) => r.status === "Pending").length };
+    }));
+  }, []);
+
+  const barData = projects.map((p) => ({ name: p.name.split(" ").slice(0, 2).join(" "), performance: Math.floor(Math.random() * 40) + 60 }));
+  const pieData = [{ name: "Budget", value: 17000000 }, { name: "Expense", value: 12000000 }];
+
+  const statCards = [
+    { label: "Active Projects", value: String(stats.active), icon: FolderOpen, color: "stat-card-icon-blue" },
+    { label: "Attendance %", value: stats.attendance, icon: CalendarCheck, color: "stat-card-icon-green" },
+    { label: "Total Budget", value: stats.budget, icon: Wallet, color: "stat-card-icon-teal" },
+    { label: "Total Expenses", value: stats.expense, icon: TrendingDown, color: "stat-card-icon-orange" },
+  ];
+
   return (
-    <DashboardLayout role="management" userName="Management User">
+    <DashboardLayout role="management" userName={currentUser?.name || "Management"}>
       <PageHeader title="Management Dashboard" breadcrumbs={[{ label: "Management" }, { label: "Dashboard" }]} />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {stats.map((s) => (
+        {statCards.map((s) => (
           <div key={s.label} className="stat-card">
             <div className={`stat-card-icon ${s.color}`}><s.icon className="w-6 h-6" /></div>
             <div>

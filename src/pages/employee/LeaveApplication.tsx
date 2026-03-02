@@ -1,19 +1,39 @@
+import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import PageHeader from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-
-const history = [
-  { from: "2026-02-15", to: "2026-02-16", status: "Approved", approvedBy: "Rahul M." },
-  { from: "2026-01-10", to: "2026-01-10", status: "Rejected", approvedBy: "Rahul M." },
-  { from: "2025-12-24", to: "2025-12-26", status: "Approved", approvedBy: "Rahul M." },
-];
+import { getAll, getCurrentUser, insert, generateId, type LeaveRequest } from "@/lib/db";
+import { toast } from "@/hooks/use-toast";
 
 const LeaveApplication = () => {
+  const currentUser = getCurrentUser();
+  const [leaves, setLeaves] = useState<LeaveRequest[]>([]);
+  const [form, setForm] = useState({ from: "", to: "", reason: "" });
+
+  useEffect(() => {
+    if (!currentUser) return;
+    setLeaves(getAll<LeaveRequest>("leaves").filter((l) => l.userId === currentUser.id));
+  }, []);
+
+  const handleSubmit = () => {
+    if (!form.from || !form.to || !form.reason || !currentUser) {
+      toast({ title: "Please fill all fields", variant: "destructive" });
+      return;
+    }
+    insert<LeaveRequest>("leaves", {
+      id: generateId(), userId: currentUser.id, userName: currentUser.name,
+      from: form.from, to: form.to, reason: form.reason, status: "Pending", approvedBy: "—",
+    });
+    setLeaves(getAll<LeaveRequest>("leaves").filter((l) => l.userId === currentUser.id));
+    setForm({ from: "", to: "", reason: "" });
+    toast({ title: "Leave application submitted" });
+  };
+
   return (
-    <DashboardLayout role="employee" userName="Aisha Khan">
+    <DashboardLayout role="employee" userName={currentUser?.name || "Employee"}>
       <PageHeader title="Leave Application" breadcrumbs={[{ label: "Employee", path: "/employee/dashboard" }, { label: "Leave" }]} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -21,11 +41,11 @@ const LeaveApplication = () => {
           <h3 className="font-heading font-semibold mb-4">Apply for Leave</h3>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5"><Label>From Date</Label><Input type="date" /></div>
-              <div className="space-y-1.5"><Label>To Date</Label><Input type="date" /></div>
+              <div className="space-y-1.5"><Label>From Date</Label><Input type="date" value={form.from} onChange={(e) => setForm({ ...form, from: e.target.value })} /></div>
+              <div className="space-y-1.5"><Label>To Date</Label><Input type="date" value={form.to} onChange={(e) => setForm({ ...form, to: e.target.value })} /></div>
             </div>
-            <div className="space-y-1.5"><Label>Reason</Label><Textarea placeholder="Enter reason for leave..." rows={4} /></div>
-            <Button className="w-full">Submit Application</Button>
+            <div className="space-y-1.5"><Label>Reason</Label><Textarea placeholder="Enter reason for leave..." rows={4} value={form.reason} onChange={(e) => setForm({ ...form, reason: e.target.value })} /></div>
+            <Button className="w-full" onClick={handleSubmit}>Submit Application</Button>
           </div>
         </div>
 
@@ -34,11 +54,11 @@ const LeaveApplication = () => {
           <table className="data-table">
             <thead><tr><th>From</th><th>To</th><th>Status</th><th>Approved By</th></tr></thead>
             <tbody>
-              {history.map((l, i) => (
-                <tr key={i}>
+              {leaves.map((l) => (
+                <tr key={l.id}>
                   <td>{l.from}</td>
                   <td>{l.to}</td>
-                  <td><span className={`badge-status ${l.status === "Approved" ? "badge-approved" : "badge-rejected"}`}>{l.status}</span></td>
+                  <td><span className={`badge-status ${l.status === "Approved" ? "badge-approved" : l.status === "Rejected" ? "badge-rejected" : "badge-pending"}`}>{l.status}</span></td>
                   <td>{l.approvedBy}</td>
                 </tr>
               ))}

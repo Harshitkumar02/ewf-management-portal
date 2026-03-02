@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import PageHeader from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/button";
@@ -6,16 +6,35 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
-const previousReports = [
-  { name: "Weekly Progress - W9", type: "Weekly", date: "2026-02-28", status: "Approved" },
-  { name: "Daily Report - Mar 1", type: "Daily", date: "2026-03-01", status: "Pending" },
-  { name: "Monthly Summary - Feb", type: "Monthly", date: "2026-02-28", status: "Pending" },
-];
+import { getAll, getCurrentUser, insert, generateId, type Report } from "@/lib/db";
+import { toast } from "@/hooks/use-toast";
 
 const ReportUpload = () => {
+  const currentUser = getCurrentUser();
+  const [reports, setReports] = useState<Report[]>([]);
+  const [form, setForm] = useState({ type: "" as Report["type"], description: "" });
+
+  useEffect(() => {
+    setReports(getAll<Report>("reports").filter((r) => r.submittedBy === currentUser?.id));
+  }, []);
+
+  const handleSubmit = () => {
+    if (!form.type || !currentUser) { toast({ title: "Please select report type", variant: "destructive" }); return; }
+    const now = new Date();
+    insert<Report>("reports", {
+      id: generateId(), name: `${form.type} Report - ${now.toLocaleDateString()}`,
+      project: currentUser.project, district: currentUser.district,
+      submittedBy: currentUser.id, submittedByName: currentUser.name,
+      date: now.toISOString().split("T")[0], type: form.type,
+      status: "Pending", description: form.description,
+    });
+    setReports(getAll<Report>("reports").filter((r) => r.submittedBy === currentUser.id));
+    setForm({ type: "" as Report["type"], description: "" });
+    toast({ title: "Report submitted successfully" });
+  };
+
   return (
-    <DashboardLayout role="manager" userName="Rahul Mehta">
+    <DashboardLayout role="manager" userName={currentUser?.name || "Manager"}>
       <PageHeader title="Upload Report" breadcrumbs={[{ label: "Manager", path: "/manager/dashboard" }, { label: "Reports" }]} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -24,23 +43,18 @@ const ReportUpload = () => {
           <div className="space-y-4">
             <div className="space-y-1.5">
               <Label>Report Type</Label>
-              <Select><SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
+              <Select value={form.type} onValueChange={(v) => setForm({ ...form, type: v as Report["type"] })}>
+                <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="daily">Daily</SelectItem>
-                  <SelectItem value="weekly">Weekly</SelectItem>
-                  <SelectItem value="monthly">Monthly</SelectItem>
+                  <SelectItem value="Daily">Daily</SelectItem>
+                  <SelectItem value="Weekly">Weekly</SelectItem>
+                  <SelectItem value="Monthly">Monthly</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-1.5">
-              <Label>Upload File</Label>
-              <Input type="file" />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Description</Label>
-              <Textarea placeholder="Add report description..." rows={4} />
-            </div>
-            <Button className="w-full">Submit Report</Button>
+            <div className="space-y-1.5"><Label>Upload File</Label><Input type="file" /></div>
+            <div className="space-y-1.5"><Label>Description</Label><Textarea placeholder="Add report description..." rows={4} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
+            <Button className="w-full" onClick={handleSubmit}>Submit Report</Button>
           </div>
         </div>
 
@@ -49,8 +63,8 @@ const ReportUpload = () => {
           <table className="data-table">
             <thead><tr><th>Report</th><th>Type</th><th>Date</th><th>Status</th></tr></thead>
             <tbody>
-              {previousReports.map((r, i) => (
-                <tr key={i}>
+              {reports.map((r) => (
+                <tr key={r.id}>
                   <td className="font-medium">{r.name}</td>
                   <td>{r.type}</td>
                   <td>{r.date}</td>

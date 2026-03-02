@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useCamera } from "@/hooks/use-camera";
-import { useGeolocation, checkGeoFence, PROJECT_GEO_FENCES } from "@/hooks/use-geolocation";
+import { useGeolocation, checkGeoFence, getProjectGeoFences } from "@/hooks/use-geolocation";
 import { Camera, MapPin, CheckCircle, XCircle, RefreshCw, AlertTriangle } from "lucide-react";
 
 interface AttendanceCheckInModalProps {
@@ -34,9 +34,9 @@ const AttendanceCheckInModal = ({ open, onOpenChange, type, onSubmit }: Attendan
   // Check geo-fence when location is available
   useEffect(() => {
     if (latitude && longitude) {
-      // Check against all fences, find closest
+      const fences = getProjectGeoFences();
       let closest: { withinFence: boolean; distanceMeters: number; fenceName: string } | null = null;
-      for (const fence of PROJECT_GEO_FENCES) {
+      for (const fence of fences) {
         const result = checkGeoFence(latitude, longitude, fence);
         if (!closest || result.distanceMeters < closest.distanceMeters) {
           closest = { ...result, fenceName: fence.name };
