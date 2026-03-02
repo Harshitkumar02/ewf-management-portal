@@ -6,9 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Pencil, Ban } from "lucide-react";
-import { getAll, insert, update, generateId, getCurrentUser, type User, type District, type Project } from "@/lib/db";
+import { Plus, Pencil, Ban, Trash2 } from "lucide-react";
+import { getAll, insert, update, remove, generateId, getCurrentUser, type User, type District, type Project } from "@/lib/db";
 import { toast } from "@/hooks/use-toast";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 const UserManagement = () => {
   const currentUser = getCurrentUser();
@@ -49,6 +50,12 @@ const UserManagement = () => {
     update<User>("users", u.id, { status: u.status === "Active" ? "Disabled" : "Active" });
     setUsers(getAll<User>("users"));
     toast({ title: `User ${u.status === "Active" ? "disabled" : "enabled"}` });
+  };
+
+  const handleDelete = (u: User) => {
+    remove("users", u.id);
+    setUsers(getAll<User>("users"));
+    toast({ title: `User "${u.name}" deleted` });
   };
 
   return (
@@ -113,6 +120,23 @@ const UserManagement = () => {
                   <div className="flex gap-1">
                     <Button variant="ghost" size="sm" onClick={() => handleEdit(u)}><Pencil className="w-4 h-4" /></Button>
                     <Button variant="ghost" size="sm" className="text-destructive" onClick={() => handleToggleStatus(u)}><Ban className="w-4 h-4" /></Button>
+                    {(u.role === "manager" || u.role === "employee") && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="sm" className="text-destructive"><Trash2 className="w-4 h-4" /></Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete User</AlertDialogTitle>
+                            <AlertDialogDescription>Are you sure you want to delete "{u.name}"? This action cannot be undone.</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDelete(u)}>Delete</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
                   </div>
                 </td>
               </tr>
