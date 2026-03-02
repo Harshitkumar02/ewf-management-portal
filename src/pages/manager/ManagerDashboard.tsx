@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import PageHeader from "@/components/layout/PageHeader";
-import { Users, CalendarCheck, FileText, ListTodo, Upload, ClipboardCheck, ClipboardList } from "lucide-react";
+import { Users, CalendarCheck, FileText, ListTodo, Upload, ClipboardCheck, ClipboardList, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { getAll, getCurrentUser, type User, type AttendanceRecord, type Report, type Task } from "@/lib/db";
+import { getAll, getCurrentUser, insert, generateId, type User, type AttendanceRecord, type Report, type Task } from "@/lib/db";
+import AttendanceCheckInModal from "@/components/attendance/AttendanceCheckInModal";
 
 const ManagerDashboard = () => {
   const currentUser = getCurrentUser();
   const [stats, setStats] = useState({ team: 0, attendance: 0, pendingReports: 0, activeTasks: 0 });
   const [reports, setReports] = useState<Report[]>([]);
+  const [checkInOpen, setCheckInOpen] = useState(false);
 
   useEffect(() => {
     const users = getAll<User>("users");
@@ -60,7 +62,7 @@ const ManagerDashboard = () => {
 
       <div className="flex flex-wrap gap-3 mb-6">
         <Link to="/manager/reports"><Button><Upload className="w-4 h-4 mr-1.5" /> Upload Report</Button></Link>
-        <Button variant="outline"><ClipboardCheck className="w-4 h-4 mr-1.5" /> Mark Attendance</Button>
+        <Button variant="outline" onClick={() => setCheckInOpen(true)}><Camera className="w-4 h-4 mr-1.5" /> Mark Attendance</Button>
         <Link to="/manager/tasks"><Button variant="outline"><ClipboardList className="w-4 h-4 mr-1.5" /> Assign Task</Button></Link>
       </div>
 
@@ -79,6 +81,25 @@ const ManagerDashboard = () => {
           </tbody>
         </table>
       </div>
+
+      <AttendanceCheckInModal
+        open={checkInOpen}
+        onOpenChange={setCheckInOpen}
+        type="check-in"
+        onSubmit={(data) => {
+          if (!currentUser) return;
+          const now = new Date();
+          const timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
+          insert<AttendanceRecord>("attendance", {
+            id: generateId(), userId: currentUser.id, userName: currentUser.name,
+            district: currentUser.district, project: currentUser.project,
+            date: now.toISOString().split("T")[0], checkIn: timeStr, checkOut: "—",
+            status: "Present", location: "GPS Verified",
+            gps: `${data.latitude.toFixed(4)}, ${data.longitude.toFixed(4)}`,
+            selfie: true, photo: data.photo,
+          });
+        }}
+      />
     </DashboardLayout>
   );
 };
