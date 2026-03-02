@@ -93,6 +93,11 @@ export interface GeoFence {
   projectId?: string;
 }
 
+export interface AppSettings {
+  id: string;
+  maxCheckInTime: string; // HH:mm format e.g. "09:10"
+}
+
 // ---- Seed Data ----
 
 const SEED_USERS: User[] = [
@@ -136,9 +141,13 @@ const SEED_GEOFENCES: GeoFence[] = [
   { id: "g5", name: "Khulna Office", latitude: 22.8456, longitude: 89.5403, radiusMeters: 500 },
 ];
 
+const SEED_SETTINGS: AppSettings[] = [
+  { id: "s1", maxCheckInTime: "09:10" },
+];
+
 // ---- Core DB Engine ----
 
-type CollectionName = "users" | "districts" | "projects" | "attendance" | "tasks" | "leaves" | "reports" | "geofences" | "session";
+type CollectionName = "users" | "districts" | "projects" | "attendance" | "tasks" | "leaves" | "reports" | "geofences" | "settings" | "session";
 
 const SEEDS: Record<string, unknown[]> = {
   users: SEED_USERS,
@@ -149,6 +158,7 @@ const SEEDS: Record<string, unknown[]> = {
   leaves: SEED_LEAVES,
   reports: SEED_REPORTS,
   geofences: SEED_GEOFENCES,
+  settings: SEED_SETTINGS,
 };
 
 function getKey(collection: CollectionName): string {
@@ -239,4 +249,25 @@ export function resetDB(): void {
   });
   localStorage.removeItem(getKey("session"));
   initDB();
+}
+
+export function getMaxCheckInTime(): string {
+  const settings = getAll<AppSettings>("settings");
+  return settings.length > 0 ? settings[0].maxCheckInTime : "09:10";
+}
+
+export function setMaxCheckInTime(time: string): void {
+  const settings = getAll<AppSettings>("settings");
+  if (settings.length > 0) {
+    update<AppSettings>("settings", settings[0].id, { maxCheckInTime: time });
+  } else {
+    insert<AppSettings>("settings", { id: "s1", maxCheckInTime: time });
+  }
+}
+
+export function isCheckInLate(): boolean {
+  const maxTime = getMaxCheckInTime();
+  const [maxH, maxM] = maxTime.split(":").map(Number);
+  const now = new Date();
+  return now.getHours() > maxH || (now.getHours() === maxH && now.getMinutes() > maxM);
 }
