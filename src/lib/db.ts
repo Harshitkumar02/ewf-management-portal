@@ -163,7 +163,7 @@ function initCollection(collection: CollectionName): void {
 }
 
 // Force a one-time reset so user starts fresh
-const RESET_VERSION_KEY = "ngo_db_reset_v4";
+const RESET_VERSION_KEY = "ngo_db_reset_v5";
 export function initDB(): void {
   if (!localStorage.getItem(RESET_VERSION_KEY)) {
     Object.keys(SEEDS).forEach((c) => {
