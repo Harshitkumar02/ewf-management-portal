@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Download, Camera, MapPin, Eye } from "lucide-react";
-import { getAll, getCurrentUser, type AttendanceRecord, type District } from "@/lib/db";
+import { getAll, getCurrentUser, type AttendanceRecord, type District, type User } from "@/lib/db";
 
 const statusBadge = (s: string) => {
   const cls = s === "Present" ? "badge-approved" : s === "Late" ? "badge-pending" : "badge-rejected";
@@ -17,12 +17,21 @@ const AttendanceView = () => {
   const currentUser = getCurrentUser();
   const [records, setRecords] = useState<AttendanceRecord[]>([]);
   const [districts, setDistricts] = useState<District[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [selectedRecord, setSelectedRecord] = useState<AttendanceRecord | null>(null);
 
   useEffect(() => {
     setRecords(getAll<AttendanceRecord>("attendance"));
     setDistricts(getAll<District>("districts"));
+    setUsers(getAll<User>("users"));
   }, []);
+
+  const getUserRole = (userId: string) => {
+    const user = users.find((u) => u.id === userId);
+    if (!user) return "";
+    const roleLabels: Record<string, string> = { management: "Management", manager: "Project Manager", employee: "Employee", admin: "Admin" };
+    return roleLabels[user.role] || user.role;
+  };
 
   return (
     <DashboardLayout role="admin" userName={currentUser?.name || "Admin User"}>
@@ -59,7 +68,10 @@ const AttendanceView = () => {
           <tbody>
             {records.map((r) => (
               <tr key={r.id}>
-                <td className="font-medium">{r.userName}</td>
+                <td className="font-medium">
+                  <div>{r.userName}</div>
+                  <div className="text-xs text-muted-foreground">{getUserRole(r.userId)}</div>
+                </td>
                 <td>{r.district}</td>
                 <td>{r.project}</td>
                 <td>{r.date}</td>
