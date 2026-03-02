@@ -19,6 +19,7 @@ const AttendanceView = () => {
   const [districts, setDistricts] = useState<District[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [selectedRecord, setSelectedRecord] = useState<AttendanceRecord | null>(null);
+  const [designationFilter, setDesignationFilter] = useState("all");
 
   useEffect(() => {
     setRecords(getAll<AttendanceRecord>("attendance"));
@@ -58,6 +59,15 @@ const AttendanceView = () => {
             {districts.map((d) => <SelectItem key={d.id} value={d.name.toLowerCase()}>{d.name}</SelectItem>)}
           </SelectContent>
         </Select>
+        <Select value={designationFilter} onValueChange={setDesignationFilter}>
+          <SelectTrigger className="w-48"><SelectValue placeholder="All Designations" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Designations</SelectItem>
+            <SelectItem value="management">Management</SelectItem>
+            <SelectItem value="manager">Project Manager</SelectItem>
+            <SelectItem value="employee">Employee</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="bg-card border rounded-md shadow-sm overflow-x-auto">
@@ -66,7 +76,13 @@ const AttendanceView = () => {
             <tr><th>Employee</th><th>District</th><th>Project</th><th>Date</th><th>Check-in</th><th>Check-out</th><th>Location</th><th>Selfie</th><th>Status</th><th>Action</th></tr>
           </thead>
           <tbody>
-            {records.map((r) => (
+            {records
+              .filter((r) => {
+                if (designationFilter === "all") return true;
+                const user = users.find((u) => u.id === r.userId);
+                return user?.role === designationFilter;
+              })
+              .map((r) => (
               <tr key={r.id}>
                 <td className="font-medium">
                   <div>{r.userName}</div>
