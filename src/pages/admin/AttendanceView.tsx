@@ -19,6 +19,7 @@ const AttendanceView = () => {
   const [districts, setDistricts] = useState<District[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [selectedRecord, setSelectedRecord] = useState<AttendanceRecord | null>(null);
+  const [districtFilter, setDistrictFilter] = useState("all");
   const [designationFilter, setDesignationFilter] = useState("all");
 
   useEffect(() => {
@@ -52,11 +53,11 @@ const AttendanceView = () => {
 
       <div className="flex flex-wrap gap-3 mb-4">
         <Input type="date" className="w-44" defaultValue="2026-03-01" />
-        <Select>
+        <Select value={districtFilter} onValueChange={setDistrictFilter}>
           <SelectTrigger className="w-40"><SelectValue placeholder="All Districts" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Districts</SelectItem>
-            {districts.map((d) => <SelectItem key={d.id} value={d.name.toLowerCase()}>{d.name}</SelectItem>)}
+            {districts.map((d) => <SelectItem key={d.id} value={d.name}>{d.name}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={designationFilter} onValueChange={setDesignationFilter}>
@@ -78,9 +79,9 @@ const AttendanceView = () => {
           <tbody>
             {records
               .filter((r) => {
-                if (designationFilter === "all") return true;
-                const user = users.find((u) => u.id === r.userId);
-                return user?.role === designationFilter;
+                const matchDistrict = districtFilter === "all" || r.district === districtFilter;
+                const matchDesignation = designationFilter === "all" || users.find((u) => u.id === r.userId)?.role === designationFilter;
+                return matchDistrict && matchDesignation;
               })
               .map((r) => (
               <tr key={r.id}>
