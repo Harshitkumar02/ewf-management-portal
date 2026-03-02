@@ -12,19 +12,23 @@ const ManagerDashboard = () => {
   const [stats, setStats] = useState({ team: 0, attendance: 0, pendingReports: 0, activeTasks: 0 });
   const [reports, setReports] = useState<Report[]>([]);
   const [checkInOpen, setCheckInOpen] = useState(false);
+  const [hasCheckedIn, setHasCheckedIn] = useState(false);
 
-  useEffect(() => {
+  const refreshData = () => {
     const users = getAll<User>("users");
     const attendance = getAll<AttendanceRecord>("attendance");
     const allReports = getAll<Report>("reports");
     const tasks = getAll<Task>("tasks");
 
-    // Manager sees their district data
     const district = currentUser?.district || "";
     const teamMembers = users.filter((u) => u.district === district && u.role === "employee");
-    const todayAttendance = attendance.filter((a) => a.district === district && a.date === "2026-03-01" && a.status !== "Absent");
+    const today = new Date().toISOString().split("T")[0];
+    const todayAttendance = attendance.filter((a) => a.district === district && a.date === today && a.status !== "Absent");
     const myReports = allReports.filter((r) => r.submittedBy === currentUser?.id);
     const myTasks = tasks.filter((t) => t.assignedBy === currentUser?.id && t.status !== "Completed");
+
+    const todayRecord = attendance.find((a) => a.userId === currentUser?.id && a.date === today);
+    setHasCheckedIn(!!todayRecord);
 
     setStats({
       team: teamMembers.length || 18,
@@ -33,7 +37,9 @@ const ManagerDashboard = () => {
       activeTasks: myTasks.length,
     });
     setReports(myReports.slice(0, 5));
-  }, []);
+  };
+
+  useEffect(() => { refreshData(); }, []);
 
   const statCards = [
     { label: "Team Members", value: String(stats.team), icon: Users, color: "stat-card-icon-blue" },
@@ -62,7 +68,7 @@ const ManagerDashboard = () => {
 
       <div className="flex flex-wrap gap-3 mb-6">
         <Link to="/manager/reports"><Button><Upload className="w-4 h-4 mr-1.5" /> Upload Report</Button></Link>
-        <Button variant="outline" onClick={() => setCheckInOpen(true)}><Camera className="w-4 h-4 mr-1.5" /> Mark Attendance</Button>
+        <Button variant="outline" onClick={() => setCheckInOpen(true)} disabled={hasCheckedIn}><Camera className="w-4 h-4 mr-1.5" /> {hasCheckedIn ? "Checked In ✓" : "Mark Attendance"}</Button>
         <Link to="/manager/tasks"><Button variant="outline"><ClipboardList className="w-4 h-4 mr-1.5" /> Assign Task</Button></Link>
       </div>
 
@@ -98,6 +104,7 @@ const ManagerDashboard = () => {
             gps: `${data.latitude.toFixed(4)}, ${data.longitude.toFixed(4)}`,
             selfie: true, photo: data.photo,
           });
+          refreshData();
         }}
       />
     </DashboardLayout>
