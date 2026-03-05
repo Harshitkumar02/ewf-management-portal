@@ -137,7 +137,76 @@ const SEED_DISTRICTS: District[] = [];
 
 const SEED_PROJECTS: Project[] = [];
 
-const SEED_ATTENDANCE: AttendanceRecord[] = [];
+function generateSeedAttendance(): AttendanceRecord[] {
+  const employees = [
+    { id: "u2", name: "Rahul Sharma", district: "—", project: "—" },
+    { id: "u3", name: "Priya Patel", district: "—", project: "—" },
+    { id: "u4", name: "Amit Kumar", district: "—", project: "—" },
+    { id: "u5", name: "Sneha Reddy", district: "—", project: "—" },
+  ];
+  const records: AttendanceRecord[] = [];
+  const statuses: Array<"Present" | "Late" | "Absent"> = ["Present", "Present", "Present", "Late", "Absent"];
+  const locations = ["Main Office", "Field Site A", "Community Center", "District HQ"];
+  let counter = 1;
+
+  // Jan, Feb, Mar 2026
+  for (let month = 1; month <= 3; month++) {
+    const daysInMonth = month === 2 ? 28 : 31;
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateStr = `2026-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+      const dow = new Date(2026, month - 1, day).getDay();
+      if (dow === 0) continue; // skip Sundays
+
+      for (const emp of employees) {
+        const status = statuses[Math.floor(Math.random() * statuses.length)];
+        if (status === "Absent") {
+          records.push({
+            id: `att-seed-${counter++}`,
+            userId: emp.id,
+            userName: emp.name,
+            district: emp.district,
+            project: emp.project,
+            date: dateStr,
+            checkIn: "—",
+            checkOut: "—",
+            status: "Absent",
+            location: "—",
+            gps: "—",
+            selfie: false,
+          });
+          continue;
+        }
+        const hour = status === "Late" ? 9 + Math.floor(Math.random() * 2) : 8;
+        const min = status === "Late" ? 15 + Math.floor(Math.random() * 45) : Math.floor(Math.random() * 50);
+        const checkIn = `${String(hour).padStart(2, "0")}:${String(min).padStart(2, "0")} AM`;
+        const outHour = 5 + Math.floor(Math.random() * 2);
+        const outMin = Math.floor(Math.random() * 60);
+        const checkOut = `${String(outHour).padStart(2, "0")}:${String(outMin).padStart(2, "0")} PM`;
+        const loc = locations[Math.floor(Math.random() * locations.length)];
+        const lat = (17.38 + Math.random() * 0.1).toFixed(4);
+        const lng = (78.48 + Math.random() * 0.1).toFixed(4);
+
+        records.push({
+          id: `att-seed-${counter++}`,
+          userId: emp.id,
+          userName: emp.name,
+          district: emp.district,
+          project: emp.project,
+          date: dateStr,
+          checkIn,
+          checkOut,
+          status,
+          location: loc,
+          gps: `${lat}, ${lng}`,
+          selfie: true,
+        });
+      }
+    }
+  }
+  return records;
+}
+
+const SEED_ATTENDANCE: AttendanceRecord[] = generateSeedAttendance();
 
 const SEED_TASKS: Task[] = [];
 
@@ -181,7 +250,7 @@ function initCollection(collection: CollectionName): void {
 }
 
 // Force a one-time reset so user starts fresh
-const RESET_VERSION_KEY = "ngo_db_reset_v9";
+const RESET_VERSION_KEY = "ngo_db_reset_v10";
 export function initDB(): void {
   if (!localStorage.getItem(RESET_VERSION_KEY)) {
     Object.keys(SEEDS).forEach((c) => {
