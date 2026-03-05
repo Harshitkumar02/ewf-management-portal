@@ -40,7 +40,7 @@ const UserManagement = () => {
     setUsers(getAll<User>("users"));
     setOpen(false);
     setEditId(null);
-    setForm({ name: "", email: "", password: "", role: "" as User["role"], district: "", project: "" });
+    setForm({ name: "", email: "", password: "", role: "" as User["role"], district: "", project: "", managerId: "" });
     toast({ title: editId ? "User updated" : "User added" });
   };
 
