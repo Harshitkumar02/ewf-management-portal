@@ -107,6 +107,17 @@ export interface CompanyDocument {
   uploadedAt: string;
 }
 
+export interface ProjectExpense {
+  id: string;
+  projectId: string;
+  projectName: string;
+  category: string;
+  amount: number;
+  description: string;
+  date: string;
+  addedBy: string;
+}
+
 export interface AppSettings {
   id: string;
   maxCheckInTime: string; // HH:mm format e.g. "09:10"
@@ -138,7 +149,7 @@ const SEED_SETTINGS: AppSettings[] = [
 
 // ---- Core DB Engine ----
 
-type CollectionName = "users" | "districts" | "projects" | "attendance" | "tasks" | "leaves" | "reports" | "geofences" | "settings" | "session" | "companyDocs";
+type CollectionName = "users" | "districts" | "projects" | "attendance" | "tasks" | "leaves" | "reports" | "geofences" | "settings" | "session" | "companyDocs" | "expenses";
 
 const SEEDS: Record<string, unknown[]> = {
   users: SEED_USERS,
@@ -151,6 +162,7 @@ const SEEDS: Record<string, unknown[]> = {
   geofences: SEED_GEOFENCES,
   settings: SEED_SETTINGS,
   companyDocs: [],
+  expenses: [],
 };
 
 function getKey(collection: CollectionName): string {

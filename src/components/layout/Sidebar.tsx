@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, MapPin, FolderOpen, Users, CalendarCheck,
   FileText, ClipboardList, CalendarDays, ChevronLeft, ChevronRight,
-  Upload, ListTodo, X, Archive
+  Upload, ListTodo, X, Archive, Wallet
 } from "lucide-react";
 import { useSidebarState } from "./SidebarContext";
 
@@ -17,6 +17,7 @@ const adminMenu = [
   { label: "User Management", icon: Users, path: "/admin/users" },
   { label: "Attendance", icon: CalendarCheck, path: "/admin/attendance" },
   { label: "Leave Approvals", icon: CalendarDays, path: "/admin/leaves" },
+  { label: "Budget & Expenses", icon: Wallet, path: "/admin/budget" },
   { label: "Documents", icon: Archive, path: "/admin/documents" },
 ];
 
@@ -25,6 +26,7 @@ const managementMenu = [
   { label: "Reports", icon: FileText, path: "/management/reports" },
   { label: "Attendance", icon: CalendarCheck, path: "/management/attendance" },
   { label: "Leave Approvals", icon: CalendarDays, path: "/management/leaves" },
+  { label: "Budget & Expenses", icon: Wallet, path: "/management/budget" },
   { label: "Documents", icon: Archive, path: "/management/documents" },
 ];
 

@@ -10,6 +10,7 @@ import ManageProjects from "./pages/admin/ManageProjects";
 import UserManagement from "./pages/admin/UserManagement";
 import AttendanceView from "./pages/admin/AttendanceView";
 import CompanyDocuments from "./pages/admin/CompanyDocuments";
+import BudgetExpenseManager from "./pages/shared/BudgetExpenseManager";
 import ManagementDashboard from "./pages/management/ManagementDashboard";
 import ManagementReports from "./pages/management/ManagementReports";
 import ManageLeaves from "./pages/management/ManageLeaves";
@@ -40,11 +41,13 @@ const App = () => (
           <Route path="/admin/attendance" element={<AttendanceView />} />
           <Route path="/admin/documents" element={<CompanyDocuments />} />
           <Route path="/admin/leaves" element={<ManageLeaves role="admin" />} />
+          <Route path="/admin/budget" element={<BudgetExpenseManager role="admin" />} />
           <Route path="/management/dashboard" element={<ManagementDashboard />} />
           <Route path="/management/reports" element={<ManagementReports />} />
           <Route path="/management/attendance" element={<AttendanceView role="management" />} />
           <Route path="/management/leaves" element={<ManageLeaves />} />
           <Route path="/management/documents" element={<CompanyDocuments role="management" />} />
+          <Route path="/management/budget" element={<BudgetExpenseManager role="management" />} />
           <Route path="/manager/dashboard" element={<ManagerDashboard />} />
           <Route path="/manager/reports" element={<ReportUpload />} />
           <Route path="/manager/tasks" element={<TaskManagement />} />
