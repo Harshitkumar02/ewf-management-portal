@@ -18,7 +18,11 @@ const statusBadge = (s: string) => {
   return <span className={`badge-status ${cls}`}>{s}</span>;
 };
 
-const AttendanceView = () => {
+interface AttendanceViewProps {
+  role?: "admin" | "management";
+}
+
+const AttendanceView = ({ role = "admin" }: AttendanceViewProps) => {
   const currentUser = getCurrentUser();
   const [records, setRecords] = useState<AttendanceRecord[]>([]);
   const [districts, setDistricts] = useState<District[]>([]);
