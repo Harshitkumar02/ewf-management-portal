@@ -42,6 +42,7 @@ const App = () => (
           <Route path="/admin/reports" element={<ManagementReports role="admin" />} />
           <Route path="/admin/documents" element={<CompanyDocuments />} />
           <Route path="/admin/leaves" element={<ManageLeaves role="admin" />} />
+          <Route path="/admin/tasks" element={<SharedTaskManagement role="admin" />} />
           <Route path="/admin/budget" element={<BudgetExpenseManager role="admin" />} />
           <Route path="/management/dashboard" element={<ManagementDashboard />} />
           <Route path="/management/reports" element={<ManagementReports />} />
