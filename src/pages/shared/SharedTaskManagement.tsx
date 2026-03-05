@@ -32,9 +32,9 @@ const SharedTaskManagement = ({ role }: SharedTaskManagementProps) => {
   useEffect(() => {
     refresh();
     const users = getAll<User>("users").filter((u) => u.status === "Active");
-    // Admin & management assign to project managers; managers assign to employees
+    // Admin & management assign to project managers and employees; managers assign to employees
     if (role === "admin" || role === "management") {
-      setAssignees(users.filter((u) => u.role === "manager"));
+      setAssignees(users.filter((u) => u.role === "manager" || u.role === "employee"));
     } else {
       setAssignees(users.filter((u) => u.role === "employee"));
     }
@@ -62,7 +62,7 @@ const SharedTaskManagement = ({ role }: SharedTaskManagementProps) => {
     toast({ title: "Task assigned successfully" });
   };
 
-  const assigneeLabel = role === "manager" ? "Select Employee" : "Select Project Manager";
+  const assigneeLabel = "Select Assignee";
 
   return (
     <DashboardLayout role={role} userName={currentUser?.name || roleLabel[role]}>
@@ -78,8 +78,8 @@ const SharedTaskManagement = ({ role }: SharedTaskManagementProps) => {
                 <div className="space-y-1.5">
                   <Label>{assigneeLabel}</Label>
                   <Select value={form.assignedTo} onValueChange={(v) => setForm({ ...form, assignedTo: v })}>
-                    <SelectTrigger><SelectValue placeholder={`Choose ${role === "manager" ? "employee" : "project manager"}`} /></SelectTrigger>
-                    <SelectContent>{assignees.map((e) => <SelectItem key={e.id} value={e.id}>{e.name} ({e.district})</SelectItem>)}</SelectContent>
+                    <SelectTrigger><SelectValue placeholder="Choose assignee" /></SelectTrigger>
+                    <SelectContent>{assignees.map((e) => <SelectItem key={e.id} value={e.id}>{e.name} — <span className="capitalize">{e.role === "manager" ? "Project Manager" : "Employee"}</span> ({e.district})</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-1.5"><Label>Task Title</Label><Input placeholder="Enter task title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></div>
