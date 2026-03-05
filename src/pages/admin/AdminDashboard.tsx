@@ -106,7 +106,17 @@ const AdminDashboard = () => {
                   <td>{r.district}</td>
                   <td>{r.submittedByName}</td>
                   <td>{statusBadge(r.status)}</td>
-                  <td><Button variant="ghost" size="sm" onClick={() => handleDownload(r)}><Download className="w-4 h-4 mr-1" /> Download</Button></td>
+                  <td>
+                    <div className="flex gap-1">
+                      <Button variant="ghost" size="sm" onClick={() => handleDownload(r)}><Download className="w-4 h-4 mr-1" /> Download</Button>
+                      {r.status === "Pending" && (
+                        <>
+                          <Button variant="ghost" size="sm" className="text-success" onClick={() => handleAction(r.id, "Approved")}><CheckCircle className="w-4 h-4" /></Button>
+                          <Button variant="ghost" size="sm" className="text-destructive" onClick={() => handleAction(r.id, "Rejected")}><XCircle className="w-4 h-4" /></Button>
+                        </>
+                      )}
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
