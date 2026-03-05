@@ -162,6 +162,7 @@ const SEEDS: Record<string, unknown[]> = {
   geofences: SEED_GEOFENCES,
   settings: SEED_SETTINGS,
   companyDocs: [],
+  expenses: [],
 };
 
 function getKey(collection: CollectionName): string {
