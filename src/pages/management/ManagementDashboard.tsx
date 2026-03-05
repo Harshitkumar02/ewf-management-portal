@@ -93,16 +93,20 @@ const ManagementDashboard = () => {
           </ResponsiveContainer>
         </div>
         <div className="bg-card border rounded-md shadow-sm p-4">
-          <h3 className="font-heading font-semibold mb-4">Budget vs Expense</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie data={pieData} cx="50%" cy="50%" outerRadius={90} dataKey="value" label>
-                {pieData.map((_, i) => <Cell key={i} fill={COLORS[i]} />)}
-              </Pie>
-              <Legend />
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+          <h3 className="font-heading font-semibold mb-4">Expense Breakdown by Category</h3>
+          {pieData.length === 0 ? (
+            <div className="flex items-center justify-center h-[250px] text-muted-foreground text-sm">No expenses recorded yet</div>
+          ) : (
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie data={pieData} cx="50%" cy="50%" outerRadius={90} dataKey="value" label={({ name, value }) => `${name}: ${formatCurrency(value)}`}>
+                  {pieData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                </Pie>
+                <Legend />
+                <Tooltip formatter={(value: number) => formatCurrency(value)} />
+              </PieChart>
+            </ResponsiveContainer>
+          )}
         </div>
       </div>
 
