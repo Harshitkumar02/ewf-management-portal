@@ -39,8 +39,8 @@ const ManagerDashboard = () => {
     setHasCheckedOut(!!todayRecord && todayRecord.checkOut !== "—");
 
     setStats({
-      team: teamMembers.length,
-      attendance: todayAttendance.length,
+      team: myTeam.length,
+      attendance: todayTeamAttendance.length,
       pendingReports: myReports.filter((r) => r.status === "Pending").length,
       activeTasks: myTasks.length,
     });
