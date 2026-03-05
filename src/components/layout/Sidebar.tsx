@@ -15,6 +15,7 @@ const adminMenu = [
   { label: "Manage Districts", icon: MapPin, path: "/admin/districts" },
   { label: "Manage Projects", icon: FolderOpen, path: "/admin/projects" },
   { label: "User Management", icon: Users, path: "/admin/users" },
+  { label: "Reports", icon: FileText, path: "/admin/reports" },
   { label: "Attendance", icon: CalendarCheck, path: "/admin/attendance" },
   { label: "Leave Approvals", icon: CalendarDays, path: "/admin/leaves" },
   { label: "Budget & Expenses", icon: Wallet, path: "/admin/budget" },
