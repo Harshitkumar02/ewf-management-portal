@@ -279,13 +279,24 @@ const AttendanceView = ({ role = "admin" }: AttendanceViewProps) => {
                   </div>
                 )}
               </div>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between"><span className="text-muted-foreground">Date</span><span className="font-medium">{selectedRecord.date}</span></div>
-                <div className="flex justify-between"><span className="text-muted-foreground">Check-in</span><span className="font-medium">{selectedRecord.checkIn}</span></div>
-                <div className="flex justify-between"><span className="text-muted-foreground">Check-out</span><span className="font-medium">{selectedRecord.checkOut}</span></div>
-                <div className="flex justify-between"><span className="text-muted-foreground">Location</span><span className="font-medium flex items-center gap-1"><MapPin className="w-3 h-3 text-success" /> {selectedRecord.location}</span></div>
-                <div className="flex justify-between"><span className="text-muted-foreground">GPS</span><span className="font-mono text-xs">{selectedRecord.gps}</span></div>
-                <div className="flex justify-between"><span className="text-muted-foreground">Status</span>{statusBadge(selectedRecord.status)}</div>
+
+              <div className="flex justify-between"><span className="text-muted-foreground text-sm">Date</span><span className="font-medium text-sm">{selectedRecord.date}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground text-sm">Status</span>{statusBadge(selectedRecord.status)}</div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="border rounded-lg p-3 space-y-1.5">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Check-In</p>
+                  <p className="text-lg font-bold text-foreground">{selectedRecord.checkIn}</p>
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground"><MapPin className="w-3 h-3 text-success" /> {selectedRecord.location}</div>
+                  <p className="font-mono text-[10px] text-muted-foreground">{selectedRecord.gps}</p>
+                </div>
+                <div className="border rounded-lg p-3 space-y-1.5">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Check-Out</p>
+                  <p className="text-lg font-bold text-foreground">{selectedRecord.checkOut}</p>
+                  {selectedRecord.checkOut !== "—" && (
+                    <div className="flex items-center gap-1 text-xs text-success"><Clock className="w-3 h-3" /> Recorded</div>
+                  )}
+                </div>
               </div>
             </div>
           )}
