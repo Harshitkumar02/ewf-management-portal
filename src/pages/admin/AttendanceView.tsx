@@ -18,7 +18,11 @@ const statusBadge = (s: string) => {
   return <span className={`badge-status ${cls}`}>{s}</span>;
 };
 
-const AttendanceView = () => {
+interface AttendanceViewProps {
+  role?: "admin" | "management";
+}
+
+const AttendanceView = ({ role = "admin" }: AttendanceViewProps) => {
   const currentUser = getCurrentUser();
   const [records, setRecords] = useState<AttendanceRecord[]>([]);
   const [districts, setDistricts] = useState<District[]>([]);
@@ -143,10 +147,10 @@ const AttendanceView = () => {
   };
 
   return (
-    <DashboardLayout role="admin" userName={currentUser?.name || "Admin User"}>
+    <DashboardLayout role={role} userName={currentUser?.name || (role === "admin" ? "Admin User" : "Management")}>
       <PageHeader
         title="Attendance Overview"
-        breadcrumbs={[{ label: "Admin", path: "/admin/dashboard" }, { label: "Attendance" }]}
+        breadcrumbs={[{ label: role === "admin" ? "Admin" : "Management", path: role === "admin" ? "/admin/dashboard" : "/management/dashboard" }, { label: "Attendance" }]}
         action={
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" size="sm" onClick={() => setSettingsOpen(true)}><Settings className="w-4 h-4 mr-1.5" /> <span className="hidden sm:inline">Check-In </span>Settings</Button>

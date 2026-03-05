@@ -22,6 +22,7 @@ const adminMenu = [
 const managementMenu = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/management/dashboard" },
   { label: "Reports", icon: FileText, path: "/management/reports" },
+  { label: "Attendance", icon: CalendarCheck, path: "/management/attendance" },
   { label: "Leave Approvals", icon: CalendarDays, path: "/management/leaves" },
 ];
 
