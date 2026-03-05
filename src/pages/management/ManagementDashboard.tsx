@@ -3,33 +3,50 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import PageHeader from "@/components/layout/PageHeader";
 import { FolderOpen, CalendarCheck, Wallet, TrendingDown } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
-import { getAll, getCurrentUser, type Project, type AttendanceRecord, type District, type Report } from "@/lib/db";
+import { getAll, getCurrentUser, type Project, type AttendanceRecord, type District, type Report, type ProjectExpense } from "@/lib/db";
 
-const COLORS = ["hsl(215,60%,28%)", "hsl(185,55%,35%)"];
+const COLORS = ["hsl(215,60%,45%)", "hsl(160,55%,40%)", "hsl(35,85%,55%)", "hsl(340,60%,50%)", "hsl(270,50%,55%)", "hsl(185,55%,40%)", "hsl(15,70%,50%)", "hsl(95,45%,45%)", "hsl(0,0%,55%)"];
+
+const formatCurrency = (amount: number) => {
+  if (amount >= 10000000) return `₹${(amount / 10000000).toFixed(2)} Cr`;
+  if (amount >= 100000) return `₹${(amount / 100000).toFixed(2)} L`;
+  if (amount >= 1000) return `₹${(amount / 1000).toFixed(1)}K`;
+  return `₹${amount.toLocaleString("en-IN")}`;
+};
 
 const ManagementDashboard = () => {
   const currentUser = getCurrentUser();
   const [projects, setProjects] = useState<Project[]>([]);
   const [districtReports, setDistrictReports] = useState<{ district: string; submitted: number; approved: number; pending: number }[]>([]);
   const [stats, setStats] = useState({ active: 0, attendance: "0%", budget: "₹0", expense: "₹0" });
+  const [pieData, setPieData] = useState<{ name: string; value: number }[]>([]);
 
   useEffect(() => {
     const allProjects = getAll<Project>("projects");
     const allAttendance = getAll<AttendanceRecord>("attendance");
     const allReports = getAll<Report>("reports");
     const allDistricts = getAll<District>("districts");
+    const allExpenses = getAll<ProjectExpense>("expenses");
 
     setProjects(allProjects);
     const activeCount = allProjects.filter((p) => p.status === "Active").length;
     const totalAtt = allAttendance.length || 1;
     const presentAtt = allAttendance.filter((a) => a.status !== "Absent").length;
 
+    const totalBudget = allProjects.reduce((sum, p) => sum + (parseFloat(p.budget.replace(/[^0-9.]/g, "")) || 0), 0);
+    const totalExpense = allExpenses.reduce((sum, e) => sum + e.amount, 0);
+
     setStats({
       active: activeCount,
       attendance: `${Math.round((presentAtt / totalAtt) * 100)}%`,
-      budget: "₹1.7Cr",
-      expense: "₹1.2Cr",
+      budget: formatCurrency(totalBudget),
+      expense: formatCurrency(totalExpense),
     });
+
+    // Pie data by expense category
+    const categoryMap = new Map<string, number>();
+    allExpenses.forEach((e) => categoryMap.set(e.category, (categoryMap.get(e.category) || 0) + e.amount));
+    setPieData(Array.from(categoryMap.entries()).map(([name, value]) => ({ name, value })));
 
     setDistrictReports(allDistricts.map((d) => {
       const dReports = allReports.filter((r) => r.district === d.name);
