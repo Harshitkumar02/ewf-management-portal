@@ -94,6 +94,18 @@ export interface GeoFence {
   projectId?: string;
 }
 
+export interface CompanyDocument {
+  id: string;
+  name: string;
+  category: string;
+  fileData: string;
+  fileName: string;
+  fileType: string;
+  fileSize: number;
+  uploadedBy: string;
+  uploadedAt: string;
+}
+
 export interface AppSettings {
   id: string;
   maxCheckInTime: string; // HH:mm format e.g. "09:10"
