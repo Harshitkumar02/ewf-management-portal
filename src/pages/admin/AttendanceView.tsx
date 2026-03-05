@@ -35,6 +35,8 @@ const AttendanceView = ({ role = "admin" }: AttendanceViewProps) => {
   const [selectedMonth, setSelectedMonth] = useState(format(new Date(), "yyyy-MM"));
   const [maxTime, setMaxTime] = useState(getMaxCheckInTime());
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [detailUser, setDetailUser] = useState<{ userId: string; userName: string } | null>(null);
+  const [detailView, setDetailView] = useState(false);
 
   useEffect(() => {
     setRecords(getAll<AttendanceRecord>("attendance"));
