@@ -78,8 +78,8 @@ const SharedTaskManagement = ({ role }: SharedTaskManagementProps) => {
                 <div className="space-y-1.5">
                   <Label>{assigneeLabel}</Label>
                   <Select value={form.assignedTo} onValueChange={(v) => setForm({ ...form, assignedTo: v })}>
-                    <SelectTrigger><SelectValue placeholder={`Choose ${role === "manager" ? "employee" : "project manager"}`} /></SelectTrigger>
-                    <SelectContent>{assignees.map((e) => <SelectItem key={e.id} value={e.id}>{e.name} ({e.district})</SelectItem>)}</SelectContent>
+                    <SelectTrigger><SelectValue placeholder="Choose assignee" /></SelectTrigger>
+                    <SelectContent>{assignees.map((e) => <SelectItem key={e.id} value={e.id}>{e.name} — <span className="capitalize">{e.role === "manager" ? "Project Manager" : "Employee"}</span> ({e.district})</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-1.5"><Label>Task Title</Label><Input placeholder="Enter task title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></div>
