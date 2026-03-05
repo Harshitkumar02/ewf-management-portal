@@ -26,6 +26,7 @@ const managementMenu = [
   { label: "Reports", icon: FileText, path: "/management/reports" },
   { label: "Attendance", icon: CalendarCheck, path: "/management/attendance" },
   { label: "Leave Approvals", icon: CalendarDays, path: "/management/leaves" },
+  { label: "Budget & Expenses", icon: Wallet, path: "/management/budget" },
   { label: "Documents", icon: Archive, path: "/management/documents" },
 ];
 
