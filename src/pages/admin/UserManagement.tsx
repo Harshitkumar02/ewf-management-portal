@@ -146,6 +146,7 @@ const UserManagement = () => {
                 <td className="capitalize">{u.role}</td>
                 <td>{u.district}</td>
                 <td>{u.project}</td>
+                <td>{u.role === "employee" && u.managerId ? users.find(m => m.id === u.managerId)?.name || "—" : "—"}</td>
                 <td><span className={`badge-status ${u.status === "Active" ? "badge-active" : "badge-rejected"}`}>{u.status}</span></td>
                 <td>
                   <div className="flex gap-1">
