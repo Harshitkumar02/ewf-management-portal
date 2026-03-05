@@ -112,6 +112,22 @@ const ManagerDashboard = () => {
           refreshData();
         }}
       />
+
+      <AttendanceCheckInModal
+        open={checkOutOpen}
+        onOpenChange={setCheckOutOpen}
+        type="check-out"
+        onSubmit={(data) => {
+          if (!currentUser) return;
+          const today = getLocalDate();
+          const attendance = getAll<AttendanceRecord>("attendance");
+          const todayRecord = attendance.find((a) => a.userId === currentUser.id && a.date === today);
+          if (todayRecord) {
+            update<AttendanceRecord>("attendance", todayRecord.id, { checkOut: getLocalTime() });
+          }
+          refreshData();
+        }}
+      />
     </DashboardLayout>
   );
 };
