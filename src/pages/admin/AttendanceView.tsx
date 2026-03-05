@@ -274,7 +274,15 @@ const AttendanceView = ({ role = "admin" }: AttendanceViewProps) => {
                 )}
                 {monthlyData.map((row) => (
                   <tr key={row.userId}>
-                    <td className="font-medium">{row.userName}</td>
+                    <td className="font-medium">
+                      <button
+                        className="text-primary hover:underline cursor-pointer font-medium text-left"
+                        onClick={() => handleEmployeeMonthlyDetail(row.userId, row.userName)}
+                        title="Download detailed monthly report"
+                      >
+                        {row.userName}
+                      </button>
+                    </td>
                     <td className="text-muted-foreground">{getUserRole(row.userId)}</td>
                     <td><span className="text-success font-medium">{row.present}</span></td>
                     <td><span className="text-warning font-medium">{row.late}</span></td>
