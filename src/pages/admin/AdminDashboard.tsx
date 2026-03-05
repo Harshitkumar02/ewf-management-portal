@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import PageHeader from "@/components/layout/PageHeader";
-import { MapPin, FolderOpen, Users, FileText, Search, Download } from "lucide-react";
+import { MapPin, FolderOpen, Users, FileText, Search, Download, CheckCircle, XCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { getAll, getCurrentUser, type District, type Project, type User, type Report } from "@/lib/db";
+import { getAll, getCurrentUser, update, type District, type Project, type User, type Report } from "@/lib/db";
 import { toast } from "@/hooks/use-toast";
 
 const statusBadge = (status: string) => {
@@ -32,7 +32,7 @@ const AdminDashboard = () => {
   const [reports, setReports] = useState<Report[]>([]);
   const [stats, setStats] = useState({ districts: 0, projects: 0, employees: 0, pendingReports: 0 });
 
-  useEffect(() => {
+  const refreshData = () => {
     const allReports = getAll<Report>("reports");
     setReports(allReports);
     setStats({
@@ -41,7 +41,15 @@ const AdminDashboard = () => {
       employees: getAll<User>("users").length,
       pendingReports: allReports.filter((r) => r.status === "Pending").length,
     });
-  }, []);
+  };
+
+  useEffect(() => { refreshData(); }, []);
+
+  const handleAction = (id: string, status: "Approved" | "Rejected") => {
+    update<Report>("reports", id, { status });
+    refreshData();
+    toast({ title: `Report ${status.toLowerCase()}` });
+  };
 
   const statCards = [
     { label: "Total Districts", value: String(stats.districts), icon: MapPin, color: "stat-card-icon-blue" },
@@ -98,7 +106,17 @@ const AdminDashboard = () => {
                   <td>{r.district}</td>
                   <td>{r.submittedByName}</td>
                   <td>{statusBadge(r.status)}</td>
-                  <td><Button variant="ghost" size="sm" onClick={() => handleDownload(r)}><Download className="w-4 h-4 mr-1" /> Download</Button></td>
+                  <td>
+                    <div className="flex gap-1">
+                      <Button variant="ghost" size="sm" onClick={() => handleDownload(r)}><Download className="w-4 h-4 mr-1" /> Download</Button>
+                      {r.status === "Pending" && (
+                        <>
+                          <Button variant="ghost" size="sm" className="text-success" onClick={() => handleAction(r.id, "Approved")}><CheckCircle className="w-4 h-4" /></Button>
+                          <Button variant="ghost" size="sm" className="text-destructive" onClick={() => handleAction(r.id, "Rejected")}><XCircle className="w-4 h-4" /></Button>
+                        </>
+                      )}
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
