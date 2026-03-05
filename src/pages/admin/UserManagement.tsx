@@ -31,10 +31,11 @@ const UserManagement = () => {
 
   const handleSave = () => {
     if (!form.name || !form.email || !form.role) { toast({ title: "Please fill required fields", variant: "destructive" }); return; }
+    const managerId = form.role === "employee" ? form.managerId || undefined : undefined;
     if (editId) {
-      update<User>("users", editId, { name: form.name, email: form.email, role: form.role, district: form.district || "—", project: form.project || "—" });
+      update<User>("users", editId, { name: form.name, email: form.email, role: form.role, district: form.district || "—", project: form.project || "—", managerId });
     } else {
-      insert<User>("users", { id: generateId(), name: form.name, email: form.email, password: form.password || "pass123", role: form.role, district: form.district || "—", project: form.project || "—", status: "Active" });
+      insert<User>("users", { id: generateId(), name: form.name, email: form.email, password: form.password || "pass123", role: form.role, district: form.district || "—", project: form.project || "—", status: "Active", managerId });
     }
     setUsers(getAll<User>("users"));
     setOpen(false);
