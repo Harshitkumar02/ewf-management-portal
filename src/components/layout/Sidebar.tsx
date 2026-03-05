@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, MapPin, FolderOpen, Users, CalendarCheck,
   FileText, ClipboardList, CalendarDays, ChevronLeft, ChevronRight,
-  Upload, ListTodo, X
+  Upload, ListTodo, X, Archive
 } from "lucide-react";
 import { useSidebarState } from "./SidebarContext";
 
