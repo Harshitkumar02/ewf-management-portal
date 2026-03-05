@@ -12,7 +12,9 @@ const ManagerDashboard = () => {
   const [stats, setStats] = useState({ team: 0, attendance: 0, pendingReports: 0, activeTasks: 0 });
   const [reports, setReports] = useState<Report[]>([]);
   const [checkInOpen, setCheckInOpen] = useState(false);
+  const [checkOutOpen, setCheckOutOpen] = useState(false);
   const [hasCheckedIn, setHasCheckedIn] = useState(false);
+  const [hasCheckedOut, setHasCheckedOut] = useState(false);
 
   const refreshData = () => {
     const users = getAll<User>("users");
