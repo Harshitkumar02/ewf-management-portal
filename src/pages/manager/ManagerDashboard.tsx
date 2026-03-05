@@ -31,6 +31,7 @@ const ManagerDashboard = () => {
 
     const todayRecord = attendance.find((a) => a.userId === currentUser?.id && a.date === today);
     setHasCheckedIn(!!todayRecord);
+    setHasCheckedOut(!!todayRecord && todayRecord.checkOut !== "—");
 
     setStats({
       team: teamMembers.length,
