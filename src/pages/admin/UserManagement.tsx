@@ -18,7 +18,7 @@ const UserManagement = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [open, setOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
-  const [form, setForm] = useState({ name: "", email: "", password: "", role: "" as User["role"], district: "", project: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "", role: "" as User["role"], district: "", project: "", managerId: "" });
   const [resetPasswordOpen, setResetPasswordOpen] = useState(false);
   const [resetPasswordUser, setResetPasswordUser] = useState<User | null>(null);
   const [newPassword, setNewPassword] = useState("");
