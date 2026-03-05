@@ -23,7 +23,7 @@ const Header = ({ userName = "Admin User", role = "admin" }: HeaderProps) => {
   const [photoModalOpen, setPhotoModalOpen] = useState(false);
   const [profilePhoto, setProfilePhoto] = useState<string | undefined>(currentUser?.profilePhoto);
 
-  const canEditPhoto = role === "manager" || role === "employee";
+  const canEditPhoto = role === "admin" || role === "management" || role === "manager" || role === "employee";
 
   return (
     <>
