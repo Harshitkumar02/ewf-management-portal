@@ -17,6 +17,7 @@ const adminMenu = [
   { label: "User Management", icon: Users, path: "/admin/users" },
   { label: "Attendance", icon: CalendarCheck, path: "/admin/attendance" },
   { label: "Leave Approvals", icon: CalendarDays, path: "/admin/leaves" },
+  { label: "Budget & Expenses", icon: Wallet, path: "/admin/budget" },
   { label: "Documents", icon: Archive, path: "/admin/documents" },
 ];
 
