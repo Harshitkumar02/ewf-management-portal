@@ -12,7 +12,11 @@ import { Upload, Download, Trash2, Pencil, FileText, Search, Plus, FolderOpen } 
 
 const DEFAULT_CATEGORIES = ["Policies", "Contracts", "Financial", "HR", "Legal", "Other"];
 
-const CompanyDocuments = () => {
+interface CompanyDocumentsProps {
+  role?: "admin" | "management";
+}
+
+const CompanyDocuments = ({ role = "admin" }: CompanyDocumentsProps) => {
   const currentUser = getCurrentUser();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [docs, setDocs] = useState<CompanyDocument[]>([]);
