@@ -16,6 +16,7 @@ const adminMenu = [
   { label: "Manage Projects", icon: FolderOpen, path: "/admin/projects" },
   { label: "User Management", icon: Users, path: "/admin/users" },
   { label: "Attendance", icon: CalendarCheck, path: "/admin/attendance" },
+  { label: "Documents", icon: Archive, path: "/admin/documents" },
 ];
 
 const managementMenu = [
