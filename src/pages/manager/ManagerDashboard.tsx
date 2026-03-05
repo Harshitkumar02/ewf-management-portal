@@ -81,6 +81,37 @@ const ManagerDashboard = () => {
         <Link to="/manager/tasks" className="w-full sm:w-auto"><Button className="w-full" variant="outline"><ClipboardList className="w-4 h-4 mr-1.5" /> Assign Task</Button></Link>
       </div>
 
+      {/* Team Attendance Section */}
+      <div className="bg-card border rounded-md shadow-sm overflow-x-auto mb-6">
+        <div className="p-4 border-b"><h3 className="font-heading font-semibold">Team Attendance — Today</h3></div>
+        <table className="data-table">
+          <thead><tr><th>Employee</th><th>District</th><th>Project</th><th>Check-In</th><th>Check-Out</th><th>Status</th></tr></thead>
+          <tbody>
+            {teamMembers.length === 0 ? (
+              <tr><td colSpan={6} className="text-center py-6 text-muted-foreground">No team members assigned to you yet.</td></tr>
+            ) : (
+              teamMembers.map((member) => {
+                const record = teamAttendance.find((a) => a.userId === member.id);
+                return (
+                  <tr key={member.id}>
+                    <td className="font-medium">{member.name}</td>
+                    <td>{member.district}</td>
+                    <td>{member.project}</td>
+                    <td>{record?.checkIn || "—"}</td>
+                    <td>{record?.checkOut || "—"}</td>
+                    <td>
+                      <span className={`badge-status ${record ? (record.status === "Present" ? "badge-approved" : record.status === "Late" ? "badge-pending" : "badge-rejected") : "badge-rejected"}`}>
+                        {record ? record.status : "Absent"}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
+
       <div className="bg-card border rounded-md shadow-sm overflow-x-auto">
         <div className="p-4 border-b"><h3 className="font-heading font-semibold">Recent Uploaded Reports</h3></div>
         <table className="data-table">
