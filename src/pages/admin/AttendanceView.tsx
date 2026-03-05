@@ -163,7 +163,7 @@ const AttendanceView = ({ role = "admin" }: AttendanceViewProps) => {
         <Camera className="w-5 h-5 text-primary shrink-0 mt-0.5 sm:mt-0" />
         <div>
           <span className="font-medium text-foreground">Selfie & GPS Verified</span>
-          <span className="text-muted-foreground ml-1 hidden sm:inline">— Employees check in with a selfie and verified GPS location within geo-fenced project zones.</span>
+          <span className="text-muted-foreground ml-1 hidden sm:inline">— Employees check in with a selfie and verified GPS location.</span>
         </div>
       </div>
 
