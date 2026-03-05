@@ -140,7 +140,7 @@ const CompanyDocuments = () => {
               ) : (
                 filtered.map((d) => (
                   <tr key={d.id}>
-                    <td className="font-medium flex items-center gap-2"><FileText className="w-4 h-4 text-muted-foreground shrink-0" />{d.name}</td>
+                    <td className="font-medium"><span className="inline-flex items-center gap-2"><FileText className="w-4 h-4 text-muted-foreground shrink-0" />{d.name}</span></td>
                     <td><span className="badge-status badge-approved">{d.category}</span></td>
                     <td className="text-muted-foreground text-xs">{d.fileName}</td>
                     <td>{formatSize(d.fileSize)}</td>
