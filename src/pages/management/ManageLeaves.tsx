@@ -28,8 +28,8 @@ const ManageLeaves = ({ role = "management" }: ManageLeavesProps) => {
   const processed = leaves.filter((l) => l.status !== "Pending");
 
   return (
-    <DashboardLayout role="management" userName={currentUser?.name || "Management"}>
-      <PageHeader title="Leave Approvals" breadcrumbs={[{ label: "Management", path: "/management/dashboard" }, { label: "Leave Approvals" }]} />
+    <DashboardLayout role={role} userName={currentUser?.name || (role === "admin" ? "Admin User" : "Management")}>
+      <PageHeader title="Leave Approvals" breadcrumbs={[{ label: role === "admin" ? "Admin" : "Management", path: role === "admin" ? "/admin/dashboard" : "/management/dashboard" }, { label: "Leave Approvals" }]} />
 
       <div className="space-y-6">
         <div className="bg-card border rounded-md shadow-sm overflow-x-auto">
