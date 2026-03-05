@@ -24,7 +24,11 @@ const statusBadge = (status: string) => {
   return <span className={`badge-status ${cls}`}>{status}</span>;
 };
 
-const ManagementReports = () => {
+interface ManagementReportsProps {
+  role?: "admin" | "management";
+}
+
+const ManagementReports = ({ role = "management" }: ManagementReportsProps) => {
   const currentUser = getCurrentUser();
   const [reports, setReports] = useState<Report[]>([]);
   const [filter, setFilter] = useState("all");
