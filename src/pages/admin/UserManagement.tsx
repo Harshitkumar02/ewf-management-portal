@@ -46,7 +46,7 @@ const UserManagement = () => {
 
   const handleEdit = (u: User) => {
     setEditId(u.id);
-    setForm({ name: u.name, email: u.email, password: "", role: u.role, district: u.district, project: u.project });
+    setForm({ name: u.name, email: u.email, password: "", role: u.role, district: u.district, project: u.project, managerId: u.managerId || "" });
     setOpen(true);
   };
 
