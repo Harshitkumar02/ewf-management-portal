@@ -81,7 +81,7 @@ const UserManagement = () => {
         title="User Management"
         breadcrumbs={[{ label: "Admin", path: "/admin/dashboard" }, { label: "Users" }]}
         action={
-          <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setEditId(null); setForm({ name: "", email: "", password: "", role: "" as User["role"], district: "", project: "" }); } }}>
+          <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setEditId(null); setForm({ name: "", email: "", password: "", role: "" as User["role"], district: "", project: "", managerId: "" }); } }}>
             <DialogTrigger asChild><Button><Plus className="w-4 h-4 mr-1.5" /> Add User</Button></DialogTrigger>
             <DialogContent>
               <DialogHeader><DialogTitle>{editId ? "Edit" : "Add New"} User</DialogTitle></DialogHeader>
