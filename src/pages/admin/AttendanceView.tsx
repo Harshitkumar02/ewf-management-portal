@@ -71,10 +71,8 @@ const AttendanceView = ({ role = "admin" }: AttendanceViewProps) => {
       return isValid(d) && d >= start && d <= end;
     });
 
-    // Group by user
     const userMap = new Map<string, { userName: string; userId: string; present: number; late: number; absent: number; total: number }>();
     
-    // Get all active users for the month
     const relevantUsers = users.filter((u) => {
       if (districtFilter !== "all" && u.district !== districtFilter) return false;
       if (designationFilter !== "all" && u.role !== designationFilter) return false;
@@ -102,6 +100,40 @@ const AttendanceView = ({ role = "admin" }: AttendanceViewProps) => {
       attendanceRate: entry.total > 0 ? Math.round(((entry.present + entry.late) / entry.total) * 100) : 0,
     }));
   }, [filteredRecords, selectedMonth, users, districtFilter, designationFilter]);
+
+  const handleEmployeeMonthlyDetail = (userId: string, userName: string) => {
+    const monthDate = parse(selectedMonth + "-01", "yyyy-MM-dd", new Date());
+    if (!isValid(monthDate)) return;
+    const start = startOfMonth(monthDate);
+    const end = endOfMonth(monthDate);
+    const days = eachDayOfInterval({ start, end });
+
+    const userRecords = records.filter((r) => {
+      const d = parse(r.date, "yyyy-MM-dd", new Date());
+      return r.userId === userId && isValid(d) && d >= start && d <= end;
+    });
+
+    const data = days.map((day) => {
+      const dateStr = format(day, "yyyy-MM-dd");
+      const rec = userRecords.find((r) => r.date === dateStr);
+      return {
+        Date: dateStr,
+        Day: format(day, "EEEE"),
+        "Check-In": rec?.checkIn || "—",
+        "Check-Out": rec?.checkOut || "—",
+        Location: rec?.location || "—",
+        GPS: rec?.gps || "—",
+        Status: rec ? rec.status : "Absent",
+      };
+    });
+
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Monthly Detail");
+    const fileName = `${userName.replace(/\s+/g, "_")}_Attendance_${selectedMonth}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+    toast({ title: `Downloaded ${fileName}` });
+  };
 
   const handleExportExcel = () => {
     let data: Record<string, unknown>[];
@@ -242,7 +274,15 @@ const AttendanceView = ({ role = "admin" }: AttendanceViewProps) => {
                 )}
                 {monthlyData.map((row) => (
                   <tr key={row.userId}>
-                    <td className="font-medium">{row.userName}</td>
+                    <td className="font-medium">
+                      <button
+                        className="text-primary hover:underline cursor-pointer font-medium text-left"
+                        onClick={() => handleEmployeeMonthlyDetail(row.userId, row.userName)}
+                        title="Download detailed monthly report"
+                      >
+                        {row.userName}
+                      </button>
+                    </td>
                     <td className="text-muted-foreground">{getUserRole(row.userId)}</td>
                     <td><span className="text-success font-medium">{row.present}</span></td>
                     <td><span className="text-warning font-medium">{row.late}</span></td>
