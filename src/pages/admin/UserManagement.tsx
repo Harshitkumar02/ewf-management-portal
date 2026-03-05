@@ -114,6 +114,20 @@ const UserManagement = () => {
                     <SelectContent>{projects.map((p) => <SelectItem key={p.id} value={p.name}>{p.name}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
+                {form.role === "employee" && (
+                  <div className="space-y-1.5">
+                    <Label>Assigned Manager</Label>
+                    <Select value={form.managerId} onValueChange={(v) => setForm({ ...form, managerId: v })}>
+                      <SelectTrigger><SelectValue placeholder="Select manager (optional)" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">No Manager</SelectItem>
+                        {users.filter((u) => u.role === "manager" && u.status === "Active").map((m) => (
+                          <SelectItem key={m.id} value={m.id}>{m.name} ({m.district})</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
                 <Button className="w-full" onClick={handleSave}>Save User</Button>
               </div>
             </DialogContent>
