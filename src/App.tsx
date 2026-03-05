@@ -53,7 +53,7 @@ const App = () => (
           <Route path="/management/budget" element={<BudgetExpenseManager role="management" />} />
           <Route path="/manager/dashboard" element={<ManagerDashboard />} />
           <Route path="/manager/reports" element={<ReportUpload />} />
-          <Route path="/manager/tasks" element={<TaskManagement />} />
+          <Route path="/manager/tasks" element={<SharedTaskManagement role="manager" />} />
           <Route path="/manager/leave" element={<ManagerLeaveApplication />} />
           <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
           <Route path="/employee/tasks" element={<EmployeeTasks />} />
