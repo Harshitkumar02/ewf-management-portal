@@ -25,11 +25,14 @@ const ManagerDashboard = () => {
     const tasks = getAll<Task>("tasks");
 
     const district = currentUser?.district || "";
-    const teamMembers = users.filter((u) => u.district === district && u.role === "employee");
+    const myTeam = users.filter((u) => u.managerId === currentUser?.id && u.role === "employee");
     const today = getLocalDate();
-    const todayAttendance = attendance.filter((a) => a.district === district && a.date === today && a.status !== "Absent");
+    const todayTeamAttendance = attendance.filter((a) => a.date === today && myTeam.some((m) => m.id === a.userId));
     const myReports = allReports.filter((r) => r.submittedBy === currentUser?.id);
     const myTasks = tasks.filter((t) => t.assignedBy === currentUser?.id && t.status !== "Completed");
+
+    setTeamMembers(myTeam);
+    setTeamAttendance(todayTeamAttendance);
 
     const todayRecord = attendance.find((a) => a.userId === currentUser?.id && a.date === today);
     setHasCheckedIn(!!todayRecord);
