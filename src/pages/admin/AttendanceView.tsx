@@ -293,8 +293,13 @@ const AttendanceView = ({ role = "admin" }: AttendanceViewProps) => {
                 <div className="border rounded-lg p-3 space-y-1.5">
                   <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Check-Out</p>
                   <p className="text-lg font-bold text-foreground">{selectedRecord.checkOut}</p>
-                  {selectedRecord.checkOut !== "—" && (
-                    <div className="flex items-center gap-1 text-xs text-success"><Clock className="w-3 h-3" /> Recorded</div>
+                  {selectedRecord.checkOut !== "—" ? (
+                    <>
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground"><MapPin className="w-3 h-3 text-success" /> {selectedRecord.location}</div>
+                      <p className="font-mono text-[10px] text-muted-foreground">{selectedRecord.gps}</p>
+                    </>
+                  ) : (
+                    <p className="text-xs text-muted-foreground">Not yet</p>
                   )}
                 </div>
               </div>
