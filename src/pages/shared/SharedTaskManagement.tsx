@@ -32,9 +32,9 @@ const SharedTaskManagement = ({ role }: SharedTaskManagementProps) => {
   useEffect(() => {
     refresh();
     const users = getAll<User>("users").filter((u) => u.status === "Active");
-    // Admin & management assign to project managers; managers assign to employees
+    // Admin & management assign to project managers and employees; managers assign to employees
     if (role === "admin" || role === "management") {
-      setAssignees(users.filter((u) => u.role === "manager"));
+      setAssignees(users.filter((u) => u.role === "manager" || u.role === "employee"));
     } else {
       setAssignees(users.filter((u) => u.role === "employee"));
     }
