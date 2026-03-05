@@ -376,6 +376,56 @@ const AttendanceView = ({ role = "admin" }: AttendanceViewProps) => {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Employee Detail Dialog */}
+      <Dialog open={!!detailUser} onOpenChange={(v) => { if (!v) { setDetailUser(null); setDetailView(false); } }}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle>Attendance Detail — {detailUser?.userName} ({selectedMonth})</DialogTitle>
+          </DialogHeader>
+          {detailUser && !detailView && (
+            <div className="flex flex-col items-center gap-4 py-6">
+              <p className="text-sm text-muted-foreground">What would you like to do?</p>
+              <div className="flex gap-3">
+                <Button variant="outline" onClick={() => setDetailView(true)}>
+                  <Eye className="w-4 h-4 mr-1.5" /> View Report
+                </Button>
+                <Button onClick={() => handleDownloadDetail(detailUser.userId, detailUser.userName)}>
+                  <Download className="w-4 h-4 mr-1.5" /> Download Excel
+                </Button>
+              </div>
+            </div>
+          )}
+          {detailUser && detailView && (
+            <div className="flex-1 overflow-auto">
+              <div className="flex justify-end mb-3">
+                <Button size="sm" variant="outline" onClick={() => handleDownloadDetail(detailUser.userId, detailUser.userName)}>
+                  <Download className="w-4 h-4 mr-1.5" /> Download
+                </Button>
+              </div>
+              <div className="border rounded-md overflow-x-auto">
+                <table className="data-table text-sm">
+                  <thead>
+                    <tr><th>Date</th><th>Day</th><th>Check-In</th><th>Check-Out</th><th>Location</th><th>Status</th></tr>
+                  </thead>
+                  <tbody>
+                    {getEmployeeDetailData(detailUser.userId).map((row) => (
+                      <tr key={row.Date}>
+                        <td className="font-medium">{row.Date}</td>
+                        <td className="text-muted-foreground">{row.Day}</td>
+                        <td>{row["Check-In"]}</td>
+                        <td>{row["Check-Out"]}</td>
+                        <td className="text-xs">{row.Location}</td>
+                        <td>{statusBadge(row.Status)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 };
