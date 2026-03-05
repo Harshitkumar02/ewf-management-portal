@@ -16,6 +16,7 @@ const adminMenu = [
   { label: "Manage Projects", icon: FolderOpen, path: "/admin/projects" },
   { label: "User Management", icon: Users, path: "/admin/users" },
   { label: "Reports", icon: FileText, path: "/admin/reports" },
+  { label: "Tasks", icon: ListTodo, path: "/admin/tasks" },
   { label: "Attendance", icon: CalendarCheck, path: "/admin/attendance" },
   { label: "Leave Approvals", icon: CalendarDays, path: "/admin/leaves" },
   { label: "Budget & Expenses", icon: Wallet, path: "/admin/budget" },
@@ -25,6 +26,7 @@ const adminMenu = [
 const managementMenu = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/management/dashboard" },
   { label: "Reports", icon: FileText, path: "/management/reports" },
+  { label: "Tasks", icon: ListTodo, path: "/management/tasks" },
   { label: "Attendance", icon: CalendarCheck, path: "/management/attendance" },
   { label: "Leave Approvals", icon: CalendarDays, path: "/management/leaves" },
   { label: "Budget & Expenses", icon: Wallet, path: "/management/budget" },
