@@ -44,8 +44,8 @@ const ManagementReports = ({ role = "management" }: ManagementReportsProps) => {
   const filtered = filter === "all" ? reports : reports.filter((r) => r.status.toLowerCase() === filter);
 
   return (
-    <DashboardLayout role="management" userName={currentUser?.name || "Management"}>
-      <PageHeader title="Reports Overview" breadcrumbs={[{ label: "Management", path: "/management/dashboard" }, { label: "Reports" }]} />
+    <DashboardLayout role={role} userName={currentUser?.name || (role === "admin" ? "Admin User" : "Management")}>
+      <PageHeader title="Reports Overview" breadcrumbs={[{ label: role === "admin" ? "Admin" : "Management", path: role === "admin" ? "/admin/dashboard" : "/management/dashboard" }, { label: "Reports" }]} />
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <div className="stat-card">
