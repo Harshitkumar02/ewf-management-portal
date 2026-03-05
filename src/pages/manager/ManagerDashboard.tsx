@@ -31,8 +31,8 @@ const ManagerDashboard = () => {
     setHasCheckedIn(!!todayRecord);
 
     setStats({
-      team: teamMembers.length || 18,
-      attendance: todayAttendance.length || 15,
+      team: teamMembers.length,
+      attendance: todayAttendance.length,
       pendingReports: myReports.filter((r) => r.status === "Pending").length,
       activeTasks: myTasks.length,
     });
