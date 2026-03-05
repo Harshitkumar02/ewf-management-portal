@@ -11,6 +11,7 @@ export interface User {
   project: string;
   status: "Active" | "Disabled";
   profilePhoto?: string;
+  managerId?: string;
 }
 
 export interface District {

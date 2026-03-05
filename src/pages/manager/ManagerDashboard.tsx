@@ -11,6 +11,8 @@ const ManagerDashboard = () => {
   const currentUser = getCurrentUser();
   const [stats, setStats] = useState({ team: 0, attendance: 0, pendingReports: 0, activeTasks: 0 });
   const [reports, setReports] = useState<Report[]>([]);
+  const [teamMembers, setTeamMembers] = useState<User[]>([]);
+  const [teamAttendance, setTeamAttendance] = useState<AttendanceRecord[]>([]);
   const [checkInOpen, setCheckInOpen] = useState(false);
   const [checkOutOpen, setCheckOutOpen] = useState(false);
   const [hasCheckedIn, setHasCheckedIn] = useState(false);
@@ -23,19 +25,22 @@ const ManagerDashboard = () => {
     const tasks = getAll<Task>("tasks");
 
     const district = currentUser?.district || "";
-    const teamMembers = users.filter((u) => u.district === district && u.role === "employee");
+    const myTeam = users.filter((u) => u.managerId === currentUser?.id && u.role === "employee");
     const today = getLocalDate();
-    const todayAttendance = attendance.filter((a) => a.district === district && a.date === today && a.status !== "Absent");
+    const todayTeamAttendance = attendance.filter((a) => a.date === today && myTeam.some((m) => m.id === a.userId));
     const myReports = allReports.filter((r) => r.submittedBy === currentUser?.id);
     const myTasks = tasks.filter((t) => t.assignedBy === currentUser?.id && t.status !== "Completed");
+
+    setTeamMembers(myTeam);
+    setTeamAttendance(todayTeamAttendance);
 
     const todayRecord = attendance.find((a) => a.userId === currentUser?.id && a.date === today);
     setHasCheckedIn(!!todayRecord);
     setHasCheckedOut(!!todayRecord && todayRecord.checkOut !== "—");
 
     setStats({
-      team: teamMembers.length,
-      attendance: todayAttendance.length,
+      team: myTeam.length,
+      attendance: todayTeamAttendance.length,
       pendingReports: myReports.filter((r) => r.status === "Pending").length,
       activeTasks: myTasks.length,
     });
@@ -74,6 +79,37 @@ const ManagerDashboard = () => {
         <Button className="w-full sm:w-auto" variant="outline" onClick={() => setCheckInOpen(true)} disabled={hasCheckedIn}><Camera className="w-4 h-4 mr-1.5" /> {hasCheckedIn ? "Checked In ✓" : "Mark Check-In"}</Button>
         <Button className="w-full sm:w-auto" variant="outline" onClick={() => setCheckOutOpen(true)} disabled={!hasCheckedIn || hasCheckedOut}><LogOut className="w-4 h-4 mr-1.5" /> {hasCheckedOut ? "Checked Out ✓" : "Mark Check-Out"}</Button>
         <Link to="/manager/tasks" className="w-full sm:w-auto"><Button className="w-full" variant="outline"><ClipboardList className="w-4 h-4 mr-1.5" /> Assign Task</Button></Link>
+      </div>
+
+      {/* Team Attendance Section */}
+      <div className="bg-card border rounded-md shadow-sm overflow-x-auto mb-6">
+        <div className="p-4 border-b"><h3 className="font-heading font-semibold">Team Attendance — Today</h3></div>
+        <table className="data-table">
+          <thead><tr><th>Employee</th><th>District</th><th>Project</th><th>Check-In</th><th>Check-Out</th><th>Status</th></tr></thead>
+          <tbody>
+            {teamMembers.length === 0 ? (
+              <tr><td colSpan={6} className="text-center py-6 text-muted-foreground">No team members assigned to you yet.</td></tr>
+            ) : (
+              teamMembers.map((member) => {
+                const record = teamAttendance.find((a) => a.userId === member.id);
+                return (
+                  <tr key={member.id}>
+                    <td className="font-medium">{member.name}</td>
+                    <td>{member.district}</td>
+                    <td>{member.project}</td>
+                    <td>{record?.checkIn || "—"}</td>
+                    <td>{record?.checkOut || "—"}</td>
+                    <td>
+                      <span className={`badge-status ${record ? (record.status === "Present" ? "badge-approved" : record.status === "Late" ? "badge-pending" : "badge-rejected") : "badge-rejected"}`}>
+                        {record ? record.status : "Absent"}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
       </div>
 
       <div className="bg-card border rounded-md shadow-sm overflow-x-auto">

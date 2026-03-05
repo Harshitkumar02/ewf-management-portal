@@ -18,7 +18,7 @@ const UserManagement = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [open, setOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
-  const [form, setForm] = useState({ name: "", email: "", password: "", role: "" as User["role"], district: "", project: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "", role: "" as User["role"], district: "", project: "", managerId: "" });
   const [resetPasswordOpen, setResetPasswordOpen] = useState(false);
   const [resetPasswordUser, setResetPasswordUser] = useState<User | null>(null);
   const [newPassword, setNewPassword] = useState("");
@@ -31,21 +31,22 @@ const UserManagement = () => {
 
   const handleSave = () => {
     if (!form.name || !form.email || !form.role) { toast({ title: "Please fill required fields", variant: "destructive" }); return; }
+    const managerId = form.role === "employee" ? form.managerId || undefined : undefined;
     if (editId) {
-      update<User>("users", editId, { name: form.name, email: form.email, role: form.role, district: form.district || "—", project: form.project || "—" });
+      update<User>("users", editId, { name: form.name, email: form.email, role: form.role, district: form.district || "—", project: form.project || "—", managerId });
     } else {
-      insert<User>("users", { id: generateId(), name: form.name, email: form.email, password: form.password || "pass123", role: form.role, district: form.district || "—", project: form.project || "—", status: "Active" });
+      insert<User>("users", { id: generateId(), name: form.name, email: form.email, password: form.password || "pass123", role: form.role, district: form.district || "—", project: form.project || "—", status: "Active", managerId });
     }
     setUsers(getAll<User>("users"));
     setOpen(false);
     setEditId(null);
-    setForm({ name: "", email: "", password: "", role: "" as User["role"], district: "", project: "" });
+    setForm({ name: "", email: "", password: "", role: "" as User["role"], district: "", project: "", managerId: "" });
     toast({ title: editId ? "User updated" : "User added" });
   };
 
   const handleEdit = (u: User) => {
     setEditId(u.id);
-    setForm({ name: u.name, email: u.email, password: "", role: u.role, district: u.district, project: u.project });
+    setForm({ name: u.name, email: u.email, password: "", role: u.role, district: u.district, project: u.project, managerId: u.managerId || "" });
     setOpen(true);
   };
 
@@ -80,7 +81,7 @@ const UserManagement = () => {
         title="User Management"
         breadcrumbs={[{ label: "Admin", path: "/admin/dashboard" }, { label: "Users" }]}
         action={
-          <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setEditId(null); setForm({ name: "", email: "", password: "", role: "" as User["role"], district: "", project: "" }); } }}>
+          <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { setEditId(null); setForm({ name: "", email: "", password: "", role: "" as User["role"], district: "", project: "", managerId: "" }); } }}>
             <DialogTrigger asChild><Button><Plus className="w-4 h-4 mr-1.5" /> Add User</Button></DialogTrigger>
             <DialogContent>
               <DialogHeader><DialogTitle>{editId ? "Edit" : "Add New"} User</DialogTitle></DialogHeader>
@@ -113,6 +114,20 @@ const UserManagement = () => {
                     <SelectContent>{projects.map((p) => <SelectItem key={p.id} value={p.name}>{p.name}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
+                {form.role === "employee" && (
+                  <div className="space-y-1.5">
+                    <Label>Assigned Manager</Label>
+                    <Select value={form.managerId} onValueChange={(v) => setForm({ ...form, managerId: v })}>
+                      <SelectTrigger><SelectValue placeholder="Select manager (optional)" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">No Manager</SelectItem>
+                        {users.filter((u) => u.role === "manager" && u.status === "Active").map((m) => (
+                          <SelectItem key={m.id} value={m.id}>{m.name} ({m.district})</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
                 <Button className="w-full" onClick={handleSave}>Save User</Button>
               </div>
             </DialogContent>
@@ -122,7 +137,7 @@ const UserManagement = () => {
 
       <div className="bg-card border rounded-md shadow-sm overflow-x-auto">
         <table className="data-table">
-          <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>District</th><th>Project</th><th>Status</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>District</th><th>Project</th><th>Manager</th><th>Status</th><th>Actions</th></tr></thead>
           <tbody>
             {users.map((u) => (
               <tr key={u.id}>
@@ -131,6 +146,7 @@ const UserManagement = () => {
                 <td className="capitalize">{u.role}</td>
                 <td>{u.district}</td>
                 <td>{u.project}</td>
+                <td>{u.role === "employee" && u.managerId ? users.find(m => m.id === u.managerId)?.name || "—" : "—"}</td>
                 <td><span className={`badge-status ${u.status === "Active" ? "badge-active" : "badge-rejected"}`}>{u.status}</span></td>
                 <td>
                   <div className="flex gap-1">
