@@ -39,6 +39,7 @@ const App = () => (
           <Route path="/admin/users" element={<UserManagement />} />
           <Route path="/admin/attendance" element={<AttendanceView />} />
           <Route path="/admin/documents" element={<CompanyDocuments />} />
+          <Route path="/admin/leaves" element={<ManageLeaves role="admin" />} />
           <Route path="/management/dashboard" element={<ManagementDashboard />} />
           <Route path="/management/reports" element={<ManagementReports />} />
           <Route path="/management/attendance" element={<AttendanceView role="management" />} />
