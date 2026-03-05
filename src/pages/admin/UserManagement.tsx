@@ -137,7 +137,7 @@ const UserManagement = () => {
 
       <div className="bg-card border rounded-md shadow-sm overflow-x-auto">
         <table className="data-table">
-          <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>District</th><th>Project</th><th>Status</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>District</th><th>Project</th><th>Manager</th><th>Status</th><th>Actions</th></tr></thead>
           <tbody>
             {users.map((u) => (
               <tr key={u.id}>
