@@ -62,7 +62,7 @@ const SharedTaskManagement = ({ role }: SharedTaskManagementProps) => {
     toast({ title: "Task assigned successfully" });
   };
 
-  const assigneeLabel = role === "manager" ? "Select Employee" : "Select Project Manager";
+  const assigneeLabel = "Select Assignee";
 
   return (
     <DashboardLayout role={role} userName={currentUser?.name || roleLabel[role]}>
