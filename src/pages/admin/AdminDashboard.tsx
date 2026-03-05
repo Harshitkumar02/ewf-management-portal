@@ -32,7 +32,7 @@ const AdminDashboard = () => {
   const [reports, setReports] = useState<Report[]>([]);
   const [stats, setStats] = useState({ districts: 0, projects: 0, employees: 0, pendingReports: 0 });
 
-  useEffect(() => {
+  const refreshData = () => {
     const allReports = getAll<Report>("reports");
     setReports(allReports);
     setStats({
@@ -41,7 +41,15 @@ const AdminDashboard = () => {
       employees: getAll<User>("users").length,
       pendingReports: allReports.filter((r) => r.status === "Pending").length,
     });
-  }, []);
+  };
+
+  useEffect(() => { refreshData(); }, []);
+
+  const handleAction = (id: string, status: "Approved" | "Rejected") => {
+    update<Report>("reports", id, { status });
+    refreshData();
+    toast({ title: `Report ${status.toLowerCase()}` });
+  };
 
   const statCards = [
     { label: "Total Districts", value: String(stats.districts), icon: MapPin, color: "stat-card-icon-blue" },
