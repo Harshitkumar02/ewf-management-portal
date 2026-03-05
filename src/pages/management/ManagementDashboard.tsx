@@ -55,7 +55,6 @@ const ManagementDashboard = () => {
   }, []);
 
   const barData = projects.map((p) => ({ name: p.name.split(" ").slice(0, 2).join(" "), performance: Math.floor(Math.random() * 40) + 60 }));
-  const pieData = [{ name: "Budget", value: 17000000 }, { name: "Expense", value: 12000000 }];
 
   const statCards = [
     { label: "Active Projects", value: String(stats.active), icon: FolderOpen, color: "stat-card-icon-blue" },
