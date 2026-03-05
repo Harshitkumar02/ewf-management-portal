@@ -94,6 +94,18 @@ export interface GeoFence {
   projectId?: string;
 }
 
+export interface CompanyDocument {
+  id: string;
+  name: string;
+  category: string;
+  fileData: string;
+  fileName: string;
+  fileType: string;
+  fileSize: number;
+  uploadedBy: string;
+  uploadedAt: string;
+}
+
 export interface AppSettings {
   id: string;
   maxCheckInTime: string; // HH:mm format e.g. "09:10"
@@ -125,7 +137,7 @@ const SEED_SETTINGS: AppSettings[] = [
 
 // ---- Core DB Engine ----
 
-type CollectionName = "users" | "districts" | "projects" | "attendance" | "tasks" | "leaves" | "reports" | "geofences" | "settings" | "session";
+type CollectionName = "users" | "districts" | "projects" | "attendance" | "tasks" | "leaves" | "reports" | "geofences" | "settings" | "session" | "companyDocs";
 
 const SEEDS: Record<string, unknown[]> = {
   users: SEED_USERS,
@@ -137,6 +149,7 @@ const SEEDS: Record<string, unknown[]> = {
   reports: SEED_REPORTS,
   geofences: SEED_GEOFENCES,
   settings: SEED_SETTINGS,
+  companyDocs: [],
 };
 
 function getKey(collection: CollectionName): string {

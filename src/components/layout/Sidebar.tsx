@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, MapPin, FolderOpen, Users, CalendarCheck,
   FileText, ClipboardList, CalendarDays, ChevronLeft, ChevronRight,
-  Upload, ListTodo, X
+  Upload, ListTodo, X, Archive
 } from "lucide-react";
 import { useSidebarState } from "./SidebarContext";
 
@@ -16,6 +16,7 @@ const adminMenu = [
   { label: "Manage Projects", icon: FolderOpen, path: "/admin/projects" },
   { label: "User Management", icon: Users, path: "/admin/users" },
   { label: "Attendance", icon: CalendarCheck, path: "/admin/attendance" },
+  { label: "Documents", icon: Archive, path: "/admin/documents" },
 ];
 
 const managementMenu = [

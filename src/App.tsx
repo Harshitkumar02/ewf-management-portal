@@ -9,6 +9,7 @@ import ManageDistricts from "./pages/admin/ManageDistricts";
 import ManageProjects from "./pages/admin/ManageProjects";
 import UserManagement from "./pages/admin/UserManagement";
 import AttendanceView from "./pages/admin/AttendanceView";
+import CompanyDocuments from "./pages/admin/CompanyDocuments";
 import ManagementDashboard from "./pages/management/ManagementDashboard";
 import ManagementReports from "./pages/management/ManagementReports";
 import ManageLeaves from "./pages/management/ManageLeaves";
@@ -37,6 +38,7 @@ const App = () => (
           <Route path="/admin/projects" element={<ManageProjects />} />
           <Route path="/admin/users" element={<UserManagement />} />
           <Route path="/admin/attendance" element={<AttendanceView />} />
+          <Route path="/admin/documents" element={<CompanyDocuments />} />
           <Route path="/management/dashboard" element={<ManagementDashboard />} />
           <Route path="/management/reports" element={<ManagementReports />} />
           <Route path="/management/leaves" element={<ManageLeaves />} />
