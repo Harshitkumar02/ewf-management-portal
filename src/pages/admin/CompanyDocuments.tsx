@@ -102,8 +102,8 @@ const CompanyDocuments = ({ role = "admin" }: CompanyDocumentsProps) => {
     .filter((d) => d.name.toLowerCase().includes(search.toLowerCase()) || d.fileName.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <DashboardLayout role="admin" userName={currentUser?.name || "Admin User"}>
-      <PageHeader title="Company Documents" breadcrumbs={[{ label: "Admin" }, { label: "Documents" }]} />
+    <DashboardLayout role={role} userName={currentUser?.name || (role === "admin" ? "Admin User" : "Management")}>
+      <PageHeader title="Company Documents" breadcrumbs={[{ label: role === "admin" ? "Admin" : "Management", path: role === "admin" ? "/admin/dashboard" : "/management/dashboard" }, { label: "Documents" }]} />
 
       <div className="bg-card border rounded-md shadow-sm">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 border-b">
