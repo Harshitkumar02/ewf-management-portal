@@ -71,7 +71,8 @@ const ManagerDashboard = () => {
 
       <div className="flex flex-col sm:flex-row flex-wrap gap-3 mb-6">
         <Link to="/manager/reports" className="w-full sm:w-auto"><Button className="w-full"><Upload className="w-4 h-4 mr-1.5" /> Upload Report</Button></Link>
-        <Button className="w-full sm:w-auto" variant="outline" onClick={() => setCheckInOpen(true)} disabled={hasCheckedIn}><Camera className="w-4 h-4 mr-1.5" /> {hasCheckedIn ? "Checked In ✓" : "Mark Attendance"}</Button>
+        <Button className="w-full sm:w-auto" variant="outline" onClick={() => setCheckInOpen(true)} disabled={hasCheckedIn}><Camera className="w-4 h-4 mr-1.5" /> {hasCheckedIn ? "Checked In ✓" : "Mark Check-In"}</Button>
+        <Button className="w-full sm:w-auto" variant="outline" onClick={() => setCheckOutOpen(true)} disabled={!hasCheckedIn || hasCheckedOut}><LogOut className="w-4 h-4 mr-1.5" /> {hasCheckedOut ? "Checked Out ✓" : "Mark Check-Out"}</Button>
         <Link to="/manager/tasks" className="w-full sm:w-auto"><Button className="w-full" variant="outline"><ClipboardList className="w-4 h-4 mr-1.5" /> Assign Task</Button></Link>
       </div>
 
