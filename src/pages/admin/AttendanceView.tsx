@@ -103,9 +103,9 @@ const AttendanceView = ({ role = "admin" }: AttendanceViewProps) => {
     }));
   }, [filteredRecords, selectedMonth, users, districtFilter, designationFilter]);
 
-  const handleEmployeeMonthlyDetail = (userId: string, userName: string) => {
+  const getEmployeeDetailData = (userId: string) => {
     const monthDate = parse(selectedMonth + "-01", "yyyy-MM-dd", new Date());
-    if (!isValid(monthDate)) return;
+    if (!isValid(monthDate)) return [];
     const start = startOfMonth(monthDate);
     const end = endOfMonth(monthDate);
     const days = eachDayOfInterval({ start, end });
@@ -115,7 +115,7 @@ const AttendanceView = ({ role = "admin" }: AttendanceViewProps) => {
       return r.userId === userId && isValid(d) && d >= start && d <= end;
     });
 
-    const data = days.map((day) => {
+    return days.map((day) => {
       const dateStr = format(day, "yyyy-MM-dd");
       const rec = userRecords.find((r) => r.date === dateStr);
       return {
@@ -128,13 +128,21 @@ const AttendanceView = ({ role = "admin" }: AttendanceViewProps) => {
         Status: rec ? rec.status : "Absent",
       };
     });
+  };
 
+  const handleDownloadDetail = (userId: string, userName: string) => {
+    const data = getEmployeeDetailData(userId);
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Monthly Detail");
     const fileName = `${userName.replace(/\s+/g, "_")}_Attendance_${selectedMonth}.xlsx`;
     XLSX.writeFile(wb, fileName);
     toast({ title: `Downloaded ${fileName}` });
+  };
+
+  const handleEmployeeClick = (userId: string, userName: string) => {
+    setDetailUser({ userId, userName });
+    setDetailView(false);
   };
 
   const handleExportExcel = () => {
