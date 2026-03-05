@@ -149,7 +149,7 @@ const SEED_SETTINGS: AppSettings[] = [
 
 // ---- Core DB Engine ----
 
-type CollectionName = "users" | "districts" | "projects" | "attendance" | "tasks" | "leaves" | "reports" | "geofences" | "settings" | "session" | "companyDocs";
+type CollectionName = "users" | "districts" | "projects" | "attendance" | "tasks" | "leaves" | "reports" | "geofences" | "settings" | "session" | "companyDocs" | "expenses";
 
 const SEEDS: Record<string, unknown[]> = {
   users: SEED_USERS,
