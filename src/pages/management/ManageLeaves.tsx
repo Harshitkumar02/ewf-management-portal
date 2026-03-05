@@ -6,7 +6,11 @@ import { Check, X } from "lucide-react";
 import { getAll, getCurrentUser, update, type LeaveRequest } from "@/lib/db";
 import { toast } from "@/hooks/use-toast";
 
-const ManageLeaves = () => {
+interface ManageLeavesProps {
+  role?: "admin" | "management";
+}
+
+const ManageLeaves = ({ role = "management" }: ManageLeavesProps) => {
   const currentUser = getCurrentUser();
   const [leaves, setLeaves] = useState<LeaveRequest[]>([]);
 
