@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import PageHeader from "@/components/layout/PageHeader";
-import { MapPin, FolderOpen, Users, FileText, Search, Download } from "lucide-react";
+import { MapPin, FolderOpen, Users, FileText, Search, Download, CheckCircle, XCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { getAll, getCurrentUser, type District, type Project, type User, type Report } from "@/lib/db";
+import { getAll, getCurrentUser, update, type District, type Project, type User, type Report } from "@/lib/db";
 import { toast } from "@/hooks/use-toast";
 
 const statusBadge = (status: string) => {
