@@ -107,6 +107,17 @@ export interface CompanyDocument {
   uploadedAt: string;
 }
 
+export interface ProjectExpense {
+  id: string;
+  projectId: string;
+  projectName: string;
+  category: string;
+  amount: number;
+  description: string;
+  date: string;
+  addedBy: string;
+}
+
 export interface AppSettings {
   id: string;
   maxCheckInTime: string; // HH:mm format e.g. "09:10"
