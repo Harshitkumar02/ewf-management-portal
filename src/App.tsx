@@ -10,6 +10,7 @@ import ManageProjects from "./pages/admin/ManageProjects";
 import UserManagement from "./pages/admin/UserManagement";
 import AttendanceView from "./pages/admin/AttendanceView";
 import CompanyDocuments from "./pages/admin/CompanyDocuments";
+import BudgetExpenseManager from "./pages/shared/BudgetExpenseManager";
 import ManagementDashboard from "./pages/management/ManagementDashboard";
 import ManagementReports from "./pages/management/ManagementReports";
 import ManageLeaves from "./pages/management/ManageLeaves";
