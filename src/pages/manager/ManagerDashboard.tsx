@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import PageHeader from "@/components/layout/PageHeader";
-import { Users, CalendarCheck, FileText, ListTodo, Upload, ClipboardCheck, ClipboardList, Camera } from "lucide-react";
+import { Users, CalendarCheck, FileText, ListTodo, Upload, ClipboardCheck, ClipboardList, Camera, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { getAll, getCurrentUser, insert, generateId, isCheckInLate, getLocalDate, getLocalTime, type User, type AttendanceRecord, type Report, type Task } from "@/lib/db";
+import { getAll, getCurrentUser, insert, update, generateId, isCheckInLate, getLocalDate, getLocalTime, type User, type AttendanceRecord, type Report, type Task } from "@/lib/db";
 import AttendanceCheckInModal from "@/components/attendance/AttendanceCheckInModal";
 
 const ManagerDashboard = () => {
@@ -12,7 +12,9 @@ const ManagerDashboard = () => {
   const [stats, setStats] = useState({ team: 0, attendance: 0, pendingReports: 0, activeTasks: 0 });
   const [reports, setReports] = useState<Report[]>([]);
   const [checkInOpen, setCheckInOpen] = useState(false);
+  const [checkOutOpen, setCheckOutOpen] = useState(false);
   const [hasCheckedIn, setHasCheckedIn] = useState(false);
+  const [hasCheckedOut, setHasCheckedOut] = useState(false);
 
   const refreshData = () => {
     const users = getAll<User>("users");
@@ -29,6 +31,7 @@ const ManagerDashboard = () => {
 
     const todayRecord = attendance.find((a) => a.userId === currentUser?.id && a.date === today);
     setHasCheckedIn(!!todayRecord);
+    setHasCheckedOut(!!todayRecord && todayRecord.checkOut !== "—");
 
     setStats({
       team: teamMembers.length,
@@ -68,7 +71,8 @@ const ManagerDashboard = () => {
 
       <div className="flex flex-col sm:flex-row flex-wrap gap-3 mb-6">
         <Link to="/manager/reports" className="w-full sm:w-auto"><Button className="w-full"><Upload className="w-4 h-4 mr-1.5" /> Upload Report</Button></Link>
-        <Button className="w-full sm:w-auto" variant="outline" onClick={() => setCheckInOpen(true)} disabled={hasCheckedIn}><Camera className="w-4 h-4 mr-1.5" /> {hasCheckedIn ? "Checked In ✓" : "Mark Attendance"}</Button>
+        <Button className="w-full sm:w-auto" variant="outline" onClick={() => setCheckInOpen(true)} disabled={hasCheckedIn}><Camera className="w-4 h-4 mr-1.5" /> {hasCheckedIn ? "Checked In ✓" : "Mark Check-In"}</Button>
+        <Button className="w-full sm:w-auto" variant="outline" onClick={() => setCheckOutOpen(true)} disabled={!hasCheckedIn || hasCheckedOut}><LogOut className="w-4 h-4 mr-1.5" /> {hasCheckedOut ? "Checked Out ✓" : "Mark Check-Out"}</Button>
         <Link to="/manager/tasks" className="w-full sm:w-auto"><Button className="w-full" variant="outline"><ClipboardList className="w-4 h-4 mr-1.5" /> Assign Task</Button></Link>
       </div>
 
@@ -105,6 +109,22 @@ const ManagerDashboard = () => {
             gps: `${data.latitude.toFixed(4)}, ${data.longitude.toFixed(4)}`,
             selfie: true, photo: data.photo,
           });
+          refreshData();
+        }}
+      />
+
+      <AttendanceCheckInModal
+        open={checkOutOpen}
+        onOpenChange={setCheckOutOpen}
+        type="check-out"
+        onSubmit={(data) => {
+          if (!currentUser) return;
+          const today = getLocalDate();
+          const attendance = getAll<AttendanceRecord>("attendance");
+          const todayRecord = attendance.find((a) => a.userId === currentUser.id && a.date === today);
+          if (todayRecord) {
+            update<AttendanceRecord>("attendance", todayRecord.id, { checkOut: getLocalTime() });
+          }
           refreshData();
         }}
       />
