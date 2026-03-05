@@ -127,6 +127,10 @@ export interface AppSettings {
 
 const SEED_USERS: User[] = [
   { id: "u1", name: "Admin User", email: "admin@ngo.org", password: "admin123", role: "admin", district: "—", project: "—", status: "Active" },
+  { id: "u2", name: "Rahul Sharma", email: "rahul@ngo.org", password: "pass123", role: "manager", district: "—", project: "—", status: "Active" },
+  { id: "u3", name: "Priya Patel", email: "priya@ngo.org", password: "pass123", role: "manager", district: "—", project: "—", status: "Active" },
+  { id: "u4", name: "Amit Kumar", email: "amit@ngo.org", password: "pass123", role: "employee", district: "—", project: "—", status: "Active", managerId: "u2" },
+  { id: "u5", name: "Sneha Reddy", email: "sneha@ngo.org", password: "pass123", role: "employee", district: "—", project: "—", status: "Active", managerId: "u3" },
 ];
 
 const SEED_DISTRICTS: District[] = [];
