@@ -287,8 +287,8 @@ const AttendanceView = ({ role = "admin" }: AttendanceViewProps) => {
                     <td className="font-medium">
                       <button
                         className="text-primary hover:underline cursor-pointer font-medium text-left"
-                        onClick={() => handleEmployeeMonthlyDetail(row.userId, row.userName)}
-                        title="Download detailed monthly report"
+                        onClick={() => handleEmployeeClick(row.userId, row.userName)}
+                        title="View or download detailed report"
                       >
                         {row.userName}
                       </button>
