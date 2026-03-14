@@ -226,7 +226,7 @@ const Proposal = () => {
             <div className="space-y-3">
               {[
                 { week: "Week 1–2", task: "Database design, Authentication system, Admin panel (User/District/Project CRUD)" },
-                { week: "Week 3–4", task: "Attendance module (GPS + Selfie + Geo-fencing), User management refinements" },
+                { week: "Week 3–4", task: "Attendance module (GPS + Selfie), User management refinements" },
                 { week: "Week 5", task: "Task management, Leave management, Report submission & review modules" },
                 { week: "Week 6", task: "Budget/Expense module, Dashboard analytics, Charts & visualizations" },
                 { week: "Week 7", task: "Integration testing, Cross-browser testing, Bug fixes, Performance optimization" },
