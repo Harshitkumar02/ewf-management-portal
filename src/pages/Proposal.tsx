@@ -203,7 +203,7 @@ const Proposal = () => {
                     ["Phase 4", "Task, Leave & Report Modules", "8,000"],
                     ["Phase 5", "Budget/Expense Module & Analytics Charts", "5,000"],
                     ["Phase 6", "Testing, Bug Fixes & Deployment", "5,000"],
-                    ["Phase 7", "Documentation & Training", "5,000"],
+                    ["Phase 7", "Document Uploads for Backup", "5,000"],
                   ].map(([phase, desc, cost], i) => (
                     <tr key={i} className={i % 2 === 0 ? "bg-slate-50" : "bg-white"}>
                       <td className="px-3 py-2 font-semibold border-b">{phase}</td>
