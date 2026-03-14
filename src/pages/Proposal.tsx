@@ -199,7 +199,7 @@ const Proposal = () => {
                   {[
                     ["Phase 1", "UI/UX Design & Frontend Development (React.js)", "20,000"],
                     ["Phase 2", "PHP Backend API & MySQL Database Design", "22,000"],
-                    ["Phase 3", "Attendance System (GPS + Selfie + Geo-fencing)", "10,000"],
+                    ["Phase 3", "Attendance System (GPS + Selfie)", "10,000"],
                     ["Phase 4", "Task, Leave & Report Modules", "8,000"],
                     ["Phase 5", "Budget/Expense Module & Analytics Charts", "5,000"],
                     ["Phase 6", "Testing, Bug Fixes & Deployment", "5,000"],
@@ -226,7 +226,7 @@ const Proposal = () => {
             <div className="space-y-3">
               {[
                 { week: "Week 1–2", task: "Database design, Authentication system, Admin panel (User/District/Project CRUD)" },
-                { week: "Week 3–4", task: "Attendance module (GPS + Selfie + Geo-fencing), User management refinements" },
+                { week: "Week 3–4", task: "Attendance module (GPS + Selfie), User management refinements" },
                 { week: "Week 5", task: "Task management, Leave management, Report submission & review modules" },
                 { week: "Week 6", task: "Budget/Expense module, Dashboard analytics, Charts & visualizations" },
                 { week: "Week 7", task: "Integration testing, Cross-browser testing, Bug fixes, Performance optimization" },
