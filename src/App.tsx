@@ -21,6 +21,7 @@ import ManagerLeaveApplication from "./pages/manager/LeaveApplication";
 import EmployeeDashboard from "./pages/employee/EmployeeDashboard";
 import EmployeeTasks from "./pages/employee/EmployeeTasks";
 import LeaveApplication from "./pages/employee/LeaveApplication";
+import Proposal from "./pages/Proposal";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
