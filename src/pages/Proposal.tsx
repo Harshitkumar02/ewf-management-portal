@@ -72,7 +72,7 @@ const Proposal = () => {
             </div>
             <p className="mt-4 text-sm text-gray-600">
               <strong>Database Tables:</strong> Users, Districts, Projects, Attendance_Records, Tasks, Leave_Requests, Reports, 
-              Expenses, Company_Documents, Geo_Fences, App_Settings, User_Sessions
+              Expenses, Company_Documents, App_Settings, User_Sessions
             </p>
           </section>
 
