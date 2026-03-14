@@ -72,7 +72,7 @@ const Proposal = () => {
             </div>
             <p className="mt-4 text-sm text-gray-600">
               <strong>Database Tables:</strong> Users, Districts, Projects, Attendance_Records, Tasks, Leave_Requests, Reports, 
-              Expenses, Company_Documents, Geo_Fences, App_Settings, User_Sessions
+              Expenses, Company_Documents, App_Settings, User_Sessions
             </p>
           </section>
 
@@ -93,7 +93,7 @@ const Proposal = () => {
               <li>Mandatory selfie photo during check-in for identity verification</li>
               <li>Automatic late detection based on configurable threshold (default: 9:10 AM)</li>
               <li>Check-out enforcement — disabled until check-in is completed</li>
-              <li>Geo-fencing: define allowed check-in zones per project/location</li>
+              <li>GPS coordinates captured and stored for verification</li>
               <li>Monthly attendance reports with filtering by date, user, and district</li>
             </FeatureBlock>
 
@@ -248,7 +248,7 @@ const Proposal = () => {
                 "Responsive design — works on Desktop, Tablet, and Mobile devices",
                 "Complete MySQL database with optimized schema and seed data",
                 "Admin panel with full CRUD operations for all modules",
-                "GPS + Selfie-based attendance system with geo-fencing",
+                "GPS + Selfie-based attendance system",
                 "Deployment on client's server (Linux / cPanel / VPS)",
                 "Complete source code handover",
                 "User manual and technical documentation",
