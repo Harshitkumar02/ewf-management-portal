@@ -93,7 +93,7 @@ const Proposal = () => {
               <li>Mandatory selfie photo during check-in for identity verification</li>
               <li>Automatic late detection based on configurable threshold (default: 9:10 AM)</li>
               <li>Check-out enforcement — disabled until check-in is completed</li>
-              <li>Geo-fencing: define allowed check-in zones per project/location</li>
+              <li>GPS coordinates captured and stored for verification</li>
               <li>Monthly attendance reports with filtering by date, user, and district</li>
             </FeatureBlock>
 
