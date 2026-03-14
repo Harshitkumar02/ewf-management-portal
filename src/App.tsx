@@ -59,6 +59,7 @@ const App = () => (
           <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
           <Route path="/employee/tasks" element={<EmployeeTasks />} />
           <Route path="/employee/leave" element={<LeaveApplication />} />
+          <Route path="/proposal" element={<Proposal />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
