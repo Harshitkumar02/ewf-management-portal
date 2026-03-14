@@ -248,7 +248,7 @@ const Proposal = () => {
                 "Responsive design — works on Desktop, Tablet, and Mobile devices",
                 "Complete MySQL database with optimized schema and seed data",
                 "Admin panel with full CRUD operations for all modules",
-                "GPS + Selfie-based attendance system with geo-fencing",
+                "GPS + Selfie-based attendance system",
                 "Deployment on client's server (Linux / cPanel / VPS)",
                 "Complete source code handover",
                 "User manual and technical documentation",
