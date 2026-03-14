@@ -21,6 +21,7 @@ import ManagerLeaveApplication from "./pages/manager/LeaveApplication";
 import EmployeeDashboard from "./pages/employee/EmployeeDashboard";
 import EmployeeTasks from "./pages/employee/EmployeeTasks";
 import LeaveApplication from "./pages/employee/LeaveApplication";
+import Proposal from "./pages/Proposal";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -58,6 +59,7 @@ const App = () => (
           <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
           <Route path="/employee/tasks" element={<EmployeeTasks />} />
           <Route path="/employee/leave" element={<LeaveApplication />} />
+          <Route path="/proposal" element={<Proposal />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
