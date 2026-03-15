@@ -131,6 +131,7 @@ const SEED_USERS: User[] = [
   { id: "u3", name: "Priya Patel", email: "priya@ngo.org", password: "pass123", role: "manager", district: "—", project: "—", status: "Active" },
   { id: "u4", name: "Amit Kumar", email: "amit@ngo.org", password: "pass123", role: "employee", district: "—", project: "—", status: "Active", managerId: "u2" },
   { id: "u5", name: "Sneha Reddy", email: "sneha@ngo.org", password: "pass123", role: "employee", district: "—", project: "—", status: "Active", managerId: "u3" },
+  { id: "u6", name: "Vikram Desai", email: "vikram@ngo.org", password: "pass123", role: "management", district: "—", project: "—", status: "Active" },
 ];
 
 const SEED_DISTRICTS: District[] = [];
@@ -250,7 +251,7 @@ function initCollection(collection: CollectionName): void {
 }
 
 // Force a one-time reset so user starts fresh
-const RESET_VERSION_KEY = "ngo_db_reset_v10";
+const RESET_VERSION_KEY = "ngo_db_reset_v11";
 export function initDB(): void {
   if (!localStorage.getItem(RESET_VERSION_KEY)) {
     Object.keys(SEEDS).forEach((c) => {
