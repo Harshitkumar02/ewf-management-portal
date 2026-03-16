@@ -34,36 +34,38 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/districts" element={<ManageDistricts />} />
-          <Route path="/admin/projects" element={<ManageProjects />} />
-          <Route path="/admin/users" element={<UserManagement />} />
-          <Route path="/admin/attendance" element={<AttendanceView />} />
-          <Route path="/admin/reports" element={<ManagementReports role="admin" />} />
-          <Route path="/admin/documents" element={<CompanyDocuments />} />
-          <Route path="/admin/leaves" element={<ManageLeaves role="admin" />} />
-          <Route path="/admin/tasks" element={<SharedTaskManagement role="admin" />} />
-          <Route path="/admin/budget" element={<BudgetExpenseManager role="admin" />} />
-          <Route path="/management/dashboard" element={<ManagementDashboard />} />
-          <Route path="/management/reports" element={<ManagementReports />} />
-          <Route path="/management/attendance" element={<AttendanceView role="management" />} />
-          <Route path="/management/leaves" element={<ManageLeaves />} />
-          <Route path="/management/tasks" element={<SharedTaskManagement role="management" />} />
-          <Route path="/management/documents" element={<CompanyDocuments role="management" />} />
-          <Route path="/management/budget" element={<BudgetExpenseManager role="management" />} />
-          <Route path="/manager/dashboard" element={<ManagerDashboard />} />
-          <Route path="/manager/reports" element={<ReportUpload />} />
-          <Route path="/manager/tasks" element={<SharedTaskManagement role="manager" />} />
-          <Route path="/manager/leave" element={<ManagerLeaveApplication />} />
-          <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
-          <Route path="/employee/tasks" element={<EmployeeTasks />} />
-          <Route path="/employee/leave" element={<LeaveApplication />} />
-          <Route path="/proposal" element={<Proposal />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-background text-muted-foreground">Loading...</div>}>
+          <Routes>
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/districts" element={<ManageDistricts />} />
+            <Route path="/admin/projects" element={<ManageProjects />} />
+            <Route path="/admin/users" element={<UserManagement />} />
+            <Route path="/admin/attendance" element={<AttendanceView />} />
+            <Route path="/admin/reports" element={<ManagementReports role="admin" />} />
+            <Route path="/admin/documents" element={<CompanyDocuments />} />
+            <Route path="/admin/leaves" element={<ManageLeaves role="admin" />} />
+            <Route path="/admin/tasks" element={<SharedTaskManagement role="admin" />} />
+            <Route path="/admin/budget" element={<BudgetExpenseManager role="admin" />} />
+            <Route path="/management/dashboard" element={<ManagementDashboard />} />
+            <Route path="/management/reports" element={<ManagementReports />} />
+            <Route path="/management/attendance" element={<AttendanceView role="management" />} />
+            <Route path="/management/leaves" element={<ManageLeaves />} />
+            <Route path="/management/tasks" element={<SharedTaskManagement role="management" />} />
+            <Route path="/management/documents" element={<CompanyDocuments role="management" />} />
+            <Route path="/management/budget" element={<BudgetExpenseManager role="management" />} />
+            <Route path="/manager/dashboard" element={<ManagerDashboard />} />
+            <Route path="/manager/reports" element={<ReportUpload />} />
+            <Route path="/manager/tasks" element={<SharedTaskManagement role="manager" />} />
+            <Route path="/manager/leave" element={<ManagerLeaveApplication />} />
+            <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
+            <Route path="/employee/tasks" element={<EmployeeTasks />} />
+            <Route path="/employee/leave" element={<LeaveApplication />} />
+            <Route path="/proposal" element={<Proposal />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
