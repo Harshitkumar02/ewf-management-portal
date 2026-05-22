@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Building2, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
+import logo from "@/assets/logo.svg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -39,8 +40,8 @@ const Login = () => {
       <div className="w-full max-w-md">
         <div className="bg-card border rounded-lg shadow-sm p-8">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-primary rounded-xl flex items-center justify-center mx-auto mb-4">
-              <Building2 className="w-9 h-9 text-primary-foreground" />
+            <div className="w-20 h-20 rounded-xl flex items-center justify-center mx-auto mb-4 overflow-hidden bg-white">
+              <img src={logo} alt="EWF Logo" className="w-full h-full object-contain" />
             </div>
             <h1 className="text-xl font-heading font-bold text-foreground">EWF Managment Portal</h1>
             <p className="text-sm text-muted-foreground mt-1">Sign in to your account</p>
