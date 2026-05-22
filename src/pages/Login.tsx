@@ -42,7 +42,7 @@ const Login = () => {
             <div className="w-16 h-16 bg-primary rounded-xl flex items-center justify-center mx-auto mb-4">
               <Building2 className="w-9 h-9 text-primary-foreground" />
             </div>
-            <h1 className="text-xl font-heading font-bold text-foreground">NGO Management Portal</h1>
+            <h1 className="text-xl font-heading font-bold text-foreground">EWF Managment Portal</h1>
             <p className="text-sm text-muted-foreground mt-1">Sign in to your account</p>
           </div>
 
