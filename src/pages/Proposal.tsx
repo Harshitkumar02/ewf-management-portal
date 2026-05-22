@@ -23,7 +23,7 @@ const Proposal = () => {
         {/* Cover */}
         <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white px-12 py-16 print:py-12">
           <p className="text-sm tracking-[0.3em] uppercase text-slate-400 mb-2">Project Proposal</p>
-          <h1 className="text-4xl font-bold leading-tight mb-3">NGO / Organization<br/>Workforce Management Portal</h1>
+          <h1 className="text-4xl font-bold leading-tight mb-3">EWF Managment Portal</h1>
           <div className="w-16 h-1 bg-blue-500 rounded mb-6"></div>
           <p className="text-slate-300 text-lg leading-relaxed max-w-xl">
             A comprehensive web-based solution for managing attendance, tasks, leaves, budgets, and reporting — built with modern technology for reliability and scale.
